@@ -50,17 +50,17 @@ class BlockPlaceExtent(
         if (!plugin.builders.contains(wePlayer.uniqueId)) {
             // This is for non-builders.
             if (bukkitBlock.type == Material.AIR) {
-                println("block material is air!")
+//                println("block material is air!")
                 // we want to make sure builder blocks STAY.
                 if (getBlockPdc(bukkitBlock) == null) return
 
-                println("block has pdc!")
+//                println("block has pdc!")
                 val pdc = CustomBlockData(bukkitBlock, plugin)
                 val material = Material.getMaterial(pdc.get(plugin.BUILDER_BLOCK_KEY, PersistentDataType.STRING) ?: "") ?: Material.AIR
                 bukkitBlock.type = material // set it back to the way it was before.
-                println("material to set is $material")
+//                println("material to set is $material")
             } else {
-                println("block material is not air!")
+//                println("block material is not air!")
                 removePdcOfBlock(bukkitBlock)
             }
 
@@ -82,7 +82,7 @@ class BlockPlaceExtent(
         if (getBlockPdc(bukkitBlock) == null) return // make sure they actually have the pdc.
 
         pdc.remove(plugin.BUILDER_BLOCK_KEY)
-        println("removed pdc")
+//        println("removed pdc")
     }
 
     private fun setPdcOfBlock(bukkitBlock: Block) {
@@ -93,7 +93,7 @@ class BlockPlaceExtent(
             PersistentDataType.STRING,
             bukkitBlock.type.name
         )
-        println("set pdc")
+//        println("set pdc")
     }
 
     private fun getBlockPdc(bukkitBlock: Block): CustomBlockData? {
