@@ -1,9 +1,7 @@
 package me.maanraj514.builderdelight.worldedit.extent
 
 import com.jeff_media.customblockdata.CustomBlockData
-import com.sk89q.worldedit.WorldEdit
 import com.sk89q.worldedit.bukkit.BukkitAdapter
-import com.sk89q.worldedit.bukkit.BukkitBlockRegistry
 import com.sk89q.worldedit.entity.Player
 import com.sk89q.worldedit.event.extent.EditSessionEvent
 import com.sk89q.worldedit.extent.AbstractDelegateExtent
@@ -15,7 +13,6 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.scheduler.BukkitRunnable
 
 class BlockPlaceExtent(
     private val event: EditSessionEvent,
@@ -29,6 +26,8 @@ class BlockPlaceExtent(
         if (event.actor !is Player) {
             return super.setBlock(location, block)
         }
+        println("============================")
+        println("blockToSetType: ${block?.blockType}")
         val success = super.setBlock(location, block) // we set the block.
 
         val wePlayer = event.actor as Player
@@ -40,40 +39,49 @@ class BlockPlaceExtent(
         Bukkit.getScheduler().runTaskLater(plugin, Runnable {
             val bukkitBlock = world.getBlockAt(location.x, location.y, location.z)
 
+            println("bukkitBlock: ${bukkitBlock.type}")
+
             handleSetBlock(wePlayer, bukkitBlock)
         }, 1L)
+
+        println("============================")
 
         return success
     }
 
     private fun handleSetBlock(wePlayer: Player, bukkitBlock: Block) {
         if (!plugin.builders.contains(wePlayer.uniqueId)) {
+            println("1 player is not a builder!")
             // This is for non-builders.
             if (bukkitBlock.type == Material.AIR) {
+                println("1 bukkitBlockType = AIR!")
 //                println("block material is air!")
-                // we want to make sure builder blocks STAY.
-                if (getBlockPdc(bukkitBlock) == null) return
 
-//                println("block has pdc!")
-                val pdc = CustomBlockData(bukkitBlock, plugin)
-                val material = Material.getMaterial(pdc.get(plugin.BUILDER_BLOCK_KEY, PersistentDataType.STRING) ?: "") ?: Material.AIR
-                bukkitBlock.type = material // set it back to the way it was before.
-//                println("material to set is $material")
+                removePdcOfBlock(bukkitBlock)
+
+                println("1 bukkitBlock's Type is now set to: ${bukkitBlock.type}")
             } else {
 //                println("block material is not air!")
+                println("1 bukkitBlock is not air!, it is actually: ${bukkitBlock.type}")
                 removePdcOfBlock(bukkitBlock)
+                println("1 bukkitBlock's PDC was removed!")
             }
 
             return // we don't want to do anything else.
         }
+        println("2 player is a builder!")
 
         // This is for builders.
         if (bukkitBlock.type == Material.AIR) {
+            println("2 bukkitBlockType = AIR!")
             //remove pdc.
             removePdcOfBlock(bukkitBlock)
+            println("2 bukkitBlock's PDC was removed!")
         } else {
             // if the block type is not air, then set the pdc of that block.
+            println("2 bukkitBlock is not air!, it is actually: ${bukkitBlock.type}")
             setPdcOfBlock(bukkitBlock)
+            println("2 Successfully set pdc to the bukkit block!")
         }
     }
 
