@@ -1,0 +1,18 @@
+pos1:
+  world: "world"
+  x: 0
+  y: 0
+  z: 0
+
+pos2:
+  world: "world"
+  x: 0
+  y: 0
+  z: 0
+
+## This is in ticks. (The delay before the task starts)
+delay: 100
+## This is in ticks. (For clearing of non-builder mode blocks)
+interval: 100
+
+clear-message: false
