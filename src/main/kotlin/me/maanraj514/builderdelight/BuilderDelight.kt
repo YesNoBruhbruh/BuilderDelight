@@ -2,6 +2,7 @@ package me.maanraj514.builderdelight
 
 import com.jeff_media.customblockdata.CustomBlockData
 import me.maanraj514.builderdelight.command.BuildModeCommand
+import me.maanraj514.builderdelight.command.ConfigReloadCommand
 import me.maanraj514.builderdelight.command.PosCommand
 import me.maanraj514.builderdelight.listener.BuildModeListener
 import me.maanraj514.builderdelight.task.ClearBlocksTask
@@ -28,6 +29,8 @@ class BuilderDelight : JavaPlugin() {
         getCommand("pos1")?.setExecutor(posCommand)
         getCommand("pos2")?.setExecutor(posCommand)
         getCommand("savePos")?.setExecutor(posCommand)
+
+        getCommand("builderdelight-reloadconfig")?.setExecutor(ConfigReloadCommand(this))
 
         CustomBlockData.registerListener(this)
         Bukkit.getPluginManager().registerEvents(BuildModeListener(this), this)

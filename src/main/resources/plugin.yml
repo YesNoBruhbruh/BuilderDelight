@@ -15,8 +15,13 @@ commands:
   buildmode:
     description: Gets you into build mode!
     usage: /buildmode
+  builderdelight-reloadconfig:
+    description: Reloads the config file
+    usage: /builderdelight-reloadconfig
 permissions:
   builderdelight.command.buildmode:
     description: Allows you to get into build mode
   builderdelight.command.pos:
     description: Allows you to set pos1 and pos2
+  builderdeight.command.reloadconfig:
+    description: Allows you to reload the config file
