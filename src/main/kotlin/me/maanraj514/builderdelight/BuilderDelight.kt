@@ -1,12 +1,14 @@
 package me.maanraj514.builderdelight
 
 import com.jeff_media.customblockdata.CustomBlockData
+import dev.respark.licensegate.LicenseGate
 import me.maanraj514.builderdelight.command.BuildModeCommand
 import me.maanraj514.builderdelight.command.ConfigReloadCommand
 import me.maanraj514.builderdelight.command.PosCommand
 import me.maanraj514.builderdelight.listener.BuildModeListener
 import me.maanraj514.builderdelight.task.ClearBlocksTask
 import me.maanraj514.builderdelight.worldedit.WorldEditListener
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
@@ -20,8 +22,22 @@ class BuilderDelight : JavaPlugin() {
 
     private val clearBlocksTask = ClearBlocksTask(this)
 
+    private val mm = MiniMessage.miniMessage()
+
     override fun onEnable() {
         saveDefaultConfig()
+
+        val isLicenseValid = LicenseGate("a1c87")
+            .verify(config.getString("license-key"), "BuilderDelight")
+            .isValid
+
+        if (!isLicenseValid) {
+            val errorMessage = mm.deserialize("<red> INVALID LICENSE KEY!!!!! </red>")
+            for (i in 0 until 100) {
+                server.consoleSender.sendMessage(errorMessage)
+            }
+            Bukkit.getPluginManager().disablePlugin(this)
+        }
 
         getCommand("buildmode")?.setExecutor(BuildModeCommand(this))
 

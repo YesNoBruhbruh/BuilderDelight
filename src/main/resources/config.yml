@@ -16,3 +16,5 @@ delay: 100
 interval: 100
 
 clear-message: false
+
+license-key: "put your license here!"
