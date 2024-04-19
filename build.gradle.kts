@@ -10,12 +10,15 @@ repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://maven.enginehub.org/repo/")
+    maven("https://maven.respark.dev/releases")
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.20")
+
     implementation("com.jeff-media:custom-block-data:2.2.2")
+    implementation("dev.respark.licensegate:license-gate:1.0.3")
 }
 
 kotlin {
