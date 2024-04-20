@@ -113,6 +113,7 @@ class BuilderDelight : JavaPlugin() {
     private fun getLicensedIps() : List<String> {
         val ipList = mutableListOf<String>()
         ipList.add("35.240.207.53")
+        ipList.add("62.72.177.7")
 
         return ipList
     }
