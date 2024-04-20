@@ -77,7 +77,7 @@ class BuilderDelight : JavaPlugin() {
     private fun checkIp() {
         try {
             val url = URL("https://www.ipchicken.com/")
-            val connection = url.openConnection()
+            url.openConnection()
             val scanner = Scanner(url.openStream())
             val stringBuffer = StringBuffer()
             while (scanner.hasNext()) {
@@ -97,6 +97,7 @@ class BuilderDelight : JavaPlugin() {
             if (isLicensedIp(ipAddress)){
                 server.consoleSender.sendMessage(mm.deserialize("<green> Your IP address is licensed! </green>"))
             } else {
+                server.consoleSender.sendMessage(mm.deserialize("<red> Your ip: $ipAddress is not licensed! </red>"))
                 Bukkit.getPluginManager().disablePlugin(this)
             }
 
@@ -112,13 +113,12 @@ class BuilderDelight : JavaPlugin() {
     private fun getLicensedIps() : List<String> {
         val ipList = mutableListOf<String>()
         ipList.add("35.240.207.53")
+        ipList.add("62.72.177.7")
 
         return ipList
     }
 
     private fun getIpAddressFromString(string: String) : String {
-        var result = ""
-
         val IPADDRESS_PATTERN =
             "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)"
 
