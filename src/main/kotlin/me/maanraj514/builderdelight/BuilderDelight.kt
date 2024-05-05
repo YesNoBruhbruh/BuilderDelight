@@ -44,7 +44,7 @@ class BuilderDelight : JavaPlugin() {
         }
 
         scheduledWorkLoadRunnable = ScheduledWorkLoadRunnable(this)
-        scheduledWorkLoadRunnable.runTaskTimer(this, 1L, 1L)
+        scheduledWorkLoadRunnable.runTaskTimer(this, 1L, 1L) // has to be as fast as possible.
 
         clearBlocksTask = ClearBlocksTask(this)
         clearBlocksTask.runTaskTimer(this, config.getInt("delay").toLong(), config.getInt("interval").toLong())
@@ -52,6 +52,7 @@ class BuilderDelight : JavaPlugin() {
 
     override fun onDisable() {
         clearBlocksTask.cancel()
+        scheduledWorkLoadRunnable.cancel()
     }
 
     private fun registerListeners() {
