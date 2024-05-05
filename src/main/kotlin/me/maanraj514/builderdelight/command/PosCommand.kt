@@ -70,6 +70,6 @@ class PosCommand(private val plugin: BuilderDelight) : CommandExecutor {
             }
         }
 
-        return false
+        return true
     }
 }

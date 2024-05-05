@@ -26,8 +26,8 @@ class BlockPlaceExtent(
         if (event.actor !is Player) {
             return super.setBlock(location, block)
         }
-        println("============================")
-        println("blockToSetType: ${block?.blockType}")
+//        println("============================")
+//        println("blockToSetType: ${block?.blockType}")
         val success = super.setBlock(location, block) // we set the block.
 
         val wePlayer = event.actor as Player
@@ -39,49 +39,49 @@ class BlockPlaceExtent(
         Bukkit.getScheduler().runTaskLater(plugin, Runnable {
             val bukkitBlock = world.getBlockAt(location.x, location.y, location.z)
 
-            println("bukkitBlock: ${bukkitBlock.type}")
+//            println("bukkitBlock: ${bukkitBlock.type}")
 
             handleSetBlock(wePlayer, bukkitBlock)
         }, 1L)
 
-        println("============================")
+//        println("============================")
 
         return success
     }
 
     private fun handleSetBlock(wePlayer: Player, bukkitBlock: Block) {
         if (!plugin.builders.contains(wePlayer.uniqueId)) {
-            println("1 player is not a builder!")
+//            println("1 player is not a builder!")
             // This is for non-builders.
             if (bukkitBlock.type == Material.AIR) {
-                println("1 bukkitBlockType = AIR!")
+//                println("1 bukkitBlockType = AIR!")
 //                println("block material is air!")
 
                 removePdcOfBlock(bukkitBlock)
 
-                println("1 bukkitBlock's Type is now set to: ${bukkitBlock.type}")
+//                println("1 bukkitBlock's Type is now set to: ${bukkitBlock.type}")
             } else {
 //                println("block material is not air!")
-                println("1 bukkitBlock is not air!, it is actually: ${bukkitBlock.type}")
+//                println("1 bukkitBlock is not air!, it is actually: ${bukkitBlock.type}")
                 removePdcOfBlock(bukkitBlock)
-                println("1 bukkitBlock's PDC was removed!")
+//                println("1 bukkitBlock's PDC was removed!")
             }
 
             return // we don't want to do anything else.
         }
-        println("2 player is a builder!")
+//        println("2 player is a builder!")
 
         // This is for builders.
         if (bukkitBlock.type == Material.AIR) {
-            println("2 bukkitBlockType = AIR!")
+//            println("2 bukkitBlockType = AIR!")
             //remove pdc.
             removePdcOfBlock(bukkitBlock)
-            println("2 bukkitBlock's PDC was removed!")
+//            println("2 bukkitBlock's PDC was removed!")
         } else {
             // if the block type is not air, then set the pdc of that block.
-            println("2 bukkitBlock is not air!, it is actually: ${bukkitBlock.type}")
+//            println("2 bukkitBlock is not air!, it is actually: ${bukkitBlock.type}")
             setPdcOfBlock(bukkitBlock)
-            println("2 Successfully set pdc to the bukkit block!")
+//            println("2 Successfully set pdc to the bukkit block!")
         }
     }
 

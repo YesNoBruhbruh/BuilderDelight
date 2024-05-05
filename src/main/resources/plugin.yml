@@ -18,6 +18,7 @@ commands:
   builderdelight-reloadconfig:
     description: Reloads the config file
     usage: /builderdelight-reloadconfig
+  testclear:
 permissions:
   builderdelight.command.buildmode:
     description: Allows you to get into build mode
