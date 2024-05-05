@@ -2,9 +2,6 @@ package me.maanraj514.builderdelight.worldedit
 
 import com.sk89q.worldedit.EditSession
 import com.sk89q.worldedit.WorldEdit
-import com.sk89q.worldedit.bukkit.BukkitAdapter
-import com.sk89q.worldedit.bukkit.BukkitPlayer
-import com.sk89q.worldedit.entity.Player
 import com.sk89q.worldedit.event.extent.EditSessionEvent
 import com.sk89q.worldedit.util.eventbus.Subscribe
 import me.maanraj514.builderdelight.BuilderDelight

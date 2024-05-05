@@ -5,11 +5,14 @@ import dev.respark.licensegate.LicenseGate
 import me.maanraj514.builderdelight.command.BuildModeCommand
 import me.maanraj514.builderdelight.command.ConfigReloadCommand
 import me.maanraj514.builderdelight.command.PosCommand
+import me.maanraj514.builderdelight.command.TestClearCommand
 import me.maanraj514.builderdelight.listener.BuildModeListener
 import me.maanraj514.builderdelight.task.ClearBlocksTask
+import me.maanraj514.builderdelight.task.ScheduledWorkLoadRunnable
 import me.maanraj514.builderdelight.worldedit.WorldEditListener
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 import java.net.MalformedURLException
@@ -23,7 +26,8 @@ class BuilderDelight : JavaPlugin() {
     val builders = mutableSetOf<UUID>()
     val BUILDER_BLOCK_KEY = NamespacedKey(this, "builderModeBlock")
 
-    private val clearBlocksTask = ClearBlocksTask(this)
+    lateinit var scheduledWorkLoadRunnable: ScheduledWorkLoadRunnable
+    private lateinit var clearBlocksTask: ClearBlocksTask
 
     private val mm = MiniMessage.miniMessage()
 
@@ -39,10 +43,15 @@ class BuilderDelight : JavaPlugin() {
             WorldEditListener(this)
         }
 
+        scheduledWorkLoadRunnable = ScheduledWorkLoadRunnable(this)
+        scheduledWorkLoadRunnable.runTaskTimer(this, 1L, 1L)
+
+        clearBlocksTask = ClearBlocksTask(this)
         clearBlocksTask.runTaskTimer(this, config.getInt("delay").toLong(), config.getInt("interval").toLong())
     }
 
     override fun onDisable() {
+        clearBlocksTask.cancel()
     }
 
     private fun registerListeners() {
@@ -59,6 +68,8 @@ class BuilderDelight : JavaPlugin() {
         getCommand("savePos")?.setExecutor(posCommand)
 
         getCommand("builderdelight-reloadconfig")?.setExecutor(ConfigReloadCommand(this))
+
+        getCommand("testclear")?.setExecutor(TestClearCommand(this))
     }
 
     private fun licenseCheck() {
@@ -129,5 +140,23 @@ class BuilderDelight : JavaPlugin() {
         } else {
             "0.0.0.0"
         }
+    }
+
+    fun getPos1(): Location {
+        return Location(
+            Bukkit.getWorld(config.get("pos1.world").toString()),
+            config.get("pos1.x").toString().toDouble(),
+            config.get("pos1.y").toString().toDouble(),
+            config.get("pos1.z").toString().toDouble()
+        )
+    }
+
+    fun getPos2(): Location {
+        return Location(
+            Bukkit.getWorld(config.get("pos2.world").toString()),
+            config.get("pos2.x").toString().toDouble(),
+            config.get("pos2.y").toString().toDouble(),
+            config.get("pos2.z").toString().toDouble()
+        )
     }
 }
