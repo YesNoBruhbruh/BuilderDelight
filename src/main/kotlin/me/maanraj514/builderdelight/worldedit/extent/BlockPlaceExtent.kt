@@ -41,15 +41,13 @@ class BlockPlaceExtent(
 
 //            println("bukkitBlock: ${bukkitBlock.type}")
 
-            handleSetBlock(wePlayer, bukkitBlock)
+            handleSetBlockPlayer(wePlayer, bukkitBlock)
         }, 1L)
-
-//        println("============================")
 
         return success
     }
 
-    private fun handleSetBlock(wePlayer: Player, bukkitBlock: Block) {
+    private fun handleSetBlockPlayer(wePlayer: Player, bukkitBlock: Block) {
         if (!plugin.builders.contains(wePlayer.uniqueId)) {
 //            println("1 player is not a builder!")
             // This is for non-builders.

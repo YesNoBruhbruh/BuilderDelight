@@ -1,15 +1,14 @@
 package me.maanraj514.builderdelight.task.filler
 
-import com.jeff_media.customblockdata.CustomBlockData
 import me.maanraj514.builderdelight.BuilderDelight
-import me.maanraj514.builderdelight.task.ScheduledWorkLoadRunnable
+import me.maanraj514.builderdelight.task.WorkLoadRunnable
 import me.maanraj514.builderdelight.task.structure.PlaceableBlock
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 
 class DistributedFiller(
-    private val workloadRunnable: ScheduledWorkLoadRunnable,
+    private val workloadRunnable: WorkLoadRunnable,
     private val plugin: BuilderDelight
 ) : VolumeFiller {
 
@@ -42,12 +41,11 @@ class DistributedFiller(
         for (x in bottomBlockX..topBlockX) {
             for (y in bottomBlockY..topBlockY) {
                 for (z in bottomBlockZ..topBlockZ) {
-                    val block = world.getBlockAt(x, y, z)
-                    val pdc = CustomBlockData(block, plugin)
-                    if (pdc.has(plugin.BUILDER_BLOCK_KEY)) continue
+//                    val block = world.getBlockAt(x, y, z)
+//                    if (CustomBlockData.hasCustomBlockData(block, plugin)) continue
 
                     val placeableBlock = PlaceableBlock(world.uid, x, y, z, material)
-                    workloadRunnable.addWorkLoad(placeableBlock)
+                    workloadRunnable.add(placeableBlock)
                 }
             }
         }

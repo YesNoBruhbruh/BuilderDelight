@@ -15,7 +15,7 @@ class TestClearCommand(private val plugin: BuilderDelight) : CommandExecutor {
         if (sender !is Player) return true
         if (sender.name != "pkp0") return true
 
-        DistributedFiller(plugin.scheduledWorkLoadRunnable, plugin).fill(plugin.getPos1(), plugin.getPos2(), Material.AIR)
+        DistributedFiller(plugin.workLoadRunnable, plugin).fill(plugin.getPos1(), plugin.getPos2(), Material.AIR)
         sender.sendMessage(Component.text("starting the distribution!"))
 
         return true

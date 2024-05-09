@@ -5,14 +5,15 @@ import me.maanraj514.builderdelight.task.structure.WorkLoad
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
-class ScheduledWorkLoadRunnable(private val plugin: BuilderDelight) : BukkitRunnable() {
+class ScheduledWorkLoadRunnable(private val plugin: BuilderDelight) : BukkitRunnable(), WorkLoadRunnable {
 
-    private val MAX_MILLIS_PER_TICK = 2.5
+    // the less the value, the slower it is.
+    private val MAX_MILLIS_PER_TICK = 25 // default is 2.5
     private val MAX_NANOS_PER_TICK = (MAX_MILLIS_PER_TICK * 1E6).toInt()
 
     private val workLoadDeque: Deque<WorkLoad> = ArrayDeque()
 
-    fun addWorkLoad(workLoad: WorkLoad) {
+    override fun add(workLoad: WorkLoad) {
         workLoadDeque.add(workLoad)
     }
 
@@ -29,12 +30,22 @@ class ScheduledWorkLoadRunnable(private val plugin: BuilderDelight) : BukkitRunn
             nextLoad = workLoadDeque.poll()
             nextLoad.compute()
             if (nextLoad.shouldBeRescheduled()) {
-                addWorkLoad(nextLoad)
+                add(nextLoad)
             }
         }
 
         if (plugin.config.getBoolean("clear-message")) {
             println("clearing blocks...")
         }
+    }
+
+    override fun cancel() {
+        super.cancel()
+
+        workLoadDeque.clear()
+    }
+
+    override fun cancelTask() {
+        cancel()
     }
 }

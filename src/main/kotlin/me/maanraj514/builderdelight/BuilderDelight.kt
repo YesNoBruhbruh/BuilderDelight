@@ -8,7 +8,9 @@ import me.maanraj514.builderdelight.command.PosCommand
 import me.maanraj514.builderdelight.command.TestClearCommand
 import me.maanraj514.builderdelight.listener.BuildModeListener
 import me.maanraj514.builderdelight.task.ClearBlocksTask
+import me.maanraj514.builderdelight.task.DistributedTickTask
 import me.maanraj514.builderdelight.task.ScheduledWorkLoadRunnable
+import me.maanraj514.builderdelight.task.WorkLoadRunnable
 import me.maanraj514.builderdelight.worldedit.WorldEditListener
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
@@ -26,7 +28,7 @@ class BuilderDelight : JavaPlugin() {
     val builders = mutableSetOf<UUID>()
     val BUILDER_BLOCK_KEY = NamespacedKey(this, "builderModeBlock")
 
-    lateinit var scheduledWorkLoadRunnable: ScheduledWorkLoadRunnable
+    lateinit var workLoadRunnable: WorkLoadRunnable
     private lateinit var clearBlocksTask: ClearBlocksTask
 
     private val mm = MiniMessage.miniMessage()
@@ -39,20 +41,25 @@ class BuilderDelight : JavaPlugin() {
         registerCommands()
         registerListeners()
 
-        if (Bukkit.getPluginManager().getPlugin("WorldEdit") != null) {
-            WorldEditListener(this)
-        }
+        WorldEditListener(this)
 
-        scheduledWorkLoadRunnable = ScheduledWorkLoadRunnable(this)
-        scheduledWorkLoadRunnable.runTaskTimer(this, 1L, 1L) // has to be as fast as possible.
+
+//            scheduledWorkLoadRunnable = ScheduledWorkLoadRunnable(this)
+//            scheduledWorkLoadRunnable.runTaskTimer(this, 0L, 1L)
+
+        workLoadRunnable = DistributedTickTask(1000)
+        val distributedTickTask = workLoadRunnable as DistributedTickTask
+        distributedTickTask.runTaskTimer(this, 0L, 1L)
 
         clearBlocksTask = ClearBlocksTask(this)
         clearBlocksTask.runTaskTimer(this, config.getInt("delay").toLong(), config.getInt("interval").toLong())
+
+        server.consoleSender.sendMessage("Found WorldEdit! loading support...")
     }
 
     override fun onDisable() {
+        workLoadRunnable.cancelTask()
         clearBlocksTask.cancel()
-        scheduledWorkLoadRunnable.cancel()
     }
 
     private fun registerListeners() {
@@ -159,5 +166,33 @@ class BuilderDelight : JavaPlugin() {
             config.get("pos2.y").toString().toDouble(),
             config.get("pos2.z").toString().toDouble()
         )
+    }
+
+    fun getLocations(): List<Location> {
+        val locations = mutableListOf<Location>()
+
+        val pos1 = getPos1()
+        val pos2 = getPos2()
+
+        val world = pos1.world
+
+        val topBlockX: Int = pos1.blockX.coerceAtLeast(pos2.blockX)
+        val bottomBlockX: Int = pos1.blockX.coerceAtMost(pos2.blockX)
+
+        val topBlockY: Int = pos1.blockY.coerceAtLeast(pos2.blockY)
+        val bottomBlockY: Int = pos1.blockY.coerceAtMost(pos2.blockY)
+
+        val topBlockZ: Int = pos1.blockZ.coerceAtLeast(pos2.blockZ)
+        val bottomBlockZ: Int = pos1.blockZ.coerceAtMost(pos2.blockZ)
+
+        for (x in bottomBlockX..topBlockX) {
+            for (y in bottomBlockY..topBlockY) {
+                for (z in bottomBlockZ..topBlockZ) {
+                    locations.add(Location(world, x.toDouble(), y.toDouble(), z.toDouble()))
+                }
+            }
+        }
+
+        return locations
     }
 }
