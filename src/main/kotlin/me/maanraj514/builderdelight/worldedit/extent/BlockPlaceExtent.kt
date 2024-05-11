@@ -6,8 +6,8 @@ import com.sk89q.worldedit.entity.Player
 import com.sk89q.worldedit.event.extent.EditSessionEvent
 import com.sk89q.worldedit.extent.AbstractDelegateExtent
 import com.sk89q.worldedit.extent.Extent
-import com.sk89q.worldedit.math.BlockVector3
-import com.sk89q.worldedit.world.block.BlockStateHolder
+import com.sk89q.worldedit.function.pattern.Pattern
+import com.sk89q.worldedit.regions.Region
 import me.maanraj514.builderdelight.BuilderDelight
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -19,29 +19,25 @@ class BlockPlaceExtent(
     extent: Extent,
     private val weWorld: com.sk89q.worldedit.world.World,
     private val plugin: BuilderDelight
-) :
-    AbstractDelegateExtent(extent) {
+) : AbstractDelegateExtent(extent) {
 
-    override fun <T : BlockStateHolder<T>?> setBlock(location: BlockVector3, block: T): Boolean {
+    // this is for the commands.
+    override fun setBlocks(region: Region, pattern: Pattern): Int {
         if (event.actor !is Player) {
-            return super.setBlock(location, block)
+            return super.setBlocks(region, pattern)
         }
-//        println("============================")
-//        println("blockToSetType: ${block?.blockType}")
-        val success = super.setBlock(location, block) // we set the block.
+
+        val success = super.setBlocks(region, pattern)
 
         val wePlayer = event.actor as Player
         val world = BukkitAdapter.asBukkitWorld(weWorld).world
-        // sometimes this is too early,
-        // so if we set the block to air, it still thinks its blue_wool.
-        // so we make a runnable.
 
         Bukkit.getScheduler().runTaskLater(plugin, Runnable {
-            val bukkitBlock = world.getBlockAt(location.x, location.y, location.z)
+            region.forEach { blockVector3 ->
+                val bukkitBlock = world.getBlockAt(blockVector3.x, blockVector3.y, blockVector3.z)
 
-//            println("bukkitBlock: ${bukkitBlock.type}")
-
-            handleSetBlockPlayer(wePlayer, bukkitBlock)
+                handleSetBlockPlayer(wePlayer, bukkitBlock)
+            }
         }, 1L)
 
         return success
@@ -51,19 +47,7 @@ class BlockPlaceExtent(
         if (!plugin.builders.contains(wePlayer.uniqueId)) {
 //            println("1 player is not a builder!")
             // This is for non-builders.
-            if (bukkitBlock.type == Material.AIR) {
-//                println("1 bukkitBlockType = AIR!")
-//                println("block material is air!")
-
-                removePdcOfBlock(bukkitBlock)
-
-//                println("1 bukkitBlock's Type is now set to: ${bukkitBlock.type}")
-            } else {
-//                println("block material is not air!")
-//                println("1 bukkitBlock is not air!, it is actually: ${bukkitBlock.type}")
-                removePdcOfBlock(bukkitBlock)
-//                println("1 bukkitBlock's PDC was removed!")
-            }
+            removePdcOfBlock(bukkitBlock)
 
             return // we don't want to do anything else.
         }

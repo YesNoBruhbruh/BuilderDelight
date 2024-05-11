@@ -7,10 +7,7 @@ import me.maanraj514.builderdelight.command.ConfigReloadCommand
 import me.maanraj514.builderdelight.command.PosCommand
 import me.maanraj514.builderdelight.command.TestClearCommand
 import me.maanraj514.builderdelight.listener.BuildModeListener
-import me.maanraj514.builderdelight.task.ClearBlocksTask
-import me.maanraj514.builderdelight.task.DistributedTickTask
-import me.maanraj514.builderdelight.task.ScheduledWorkLoadRunnable
-import me.maanraj514.builderdelight.task.WorkLoadRunnable
+import me.maanraj514.builderdelight.tasks.ClearBlocksTask
 import me.maanraj514.builderdelight.worldedit.WorldEditListener
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
@@ -28,7 +25,6 @@ class BuilderDelight : JavaPlugin() {
     val builders = mutableSetOf<UUID>()
     val BUILDER_BLOCK_KEY = NamespacedKey(this, "builderModeBlock")
 
-    lateinit var workLoadRunnable: WorkLoadRunnable
     private lateinit var clearBlocksTask: ClearBlocksTask
 
     private val mm = MiniMessage.miniMessage()
@@ -43,14 +39,6 @@ class BuilderDelight : JavaPlugin() {
 
         WorldEditListener(this)
 
-
-//            scheduledWorkLoadRunnable = ScheduledWorkLoadRunnable(this)
-//            scheduledWorkLoadRunnable.runTaskTimer(this, 0L, 1L)
-
-        workLoadRunnable = DistributedTickTask(1000)
-        val distributedTickTask = workLoadRunnable as DistributedTickTask
-        distributedTickTask.runTaskTimer(this, 0L, 1L)
-
         clearBlocksTask = ClearBlocksTask(this)
         clearBlocksTask.runTaskTimer(this, config.getInt("delay").toLong(), config.getInt("interval").toLong())
 
@@ -58,7 +46,6 @@ class BuilderDelight : JavaPlugin() {
     }
 
     override fun onDisable() {
-        workLoadRunnable.cancelTask()
         clearBlocksTask.cancel()
     }
 

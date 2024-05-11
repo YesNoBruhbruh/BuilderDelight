@@ -2,7 +2,6 @@ package me.maanraj514.builderdelight.listener
 
 import com.jeff_media.customblockdata.CustomBlockData
 import me.maanraj514.builderdelight.BuilderDelight
-import org.bukkit.entity.TNTPrimed
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent

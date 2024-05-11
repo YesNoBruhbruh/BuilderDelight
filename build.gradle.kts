@@ -15,7 +15,11 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.20")
+//    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.20")
+
+    implementation(platform("com.intellectualsites.bom:bom-newest:1.44")) // Ref: https://github.com/IntellectualSites/bom
+    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
+    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit") { isTransitive = false }
 
     implementation("com.jeff-media:custom-block-data:2.2.2")
     implementation("dev.respark.licensegate:license-gate:1.0.3")
