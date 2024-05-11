@@ -8,6 +8,7 @@ import me.maanraj514.builderdelight.command.PosCommand
 import me.maanraj514.builderdelight.command.TestClearCommand
 import me.maanraj514.builderdelight.listener.BuildModeListener
 import me.maanraj514.builderdelight.tasks.ClearBlocksTask
+import me.maanraj514.builderdelight.tasks.DistributedTickTask
 import me.maanraj514.builderdelight.worldedit.WorldEditListener
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
@@ -25,6 +26,7 @@ class BuilderDelight : JavaPlugin() {
     val builders = mutableSetOf<UUID>()
     val BUILDER_BLOCK_KEY = NamespacedKey(this, "builderModeBlock")
 
+    lateinit var distributedTickTask: DistributedTickTask
     private lateinit var clearBlocksTask: ClearBlocksTask
 
     private val mm = MiniMessage.miniMessage()
@@ -39,6 +41,9 @@ class BuilderDelight : JavaPlugin() {
 
         WorldEditListener(this)
 
+        distributedTickTask = DistributedTickTask(20) // 20 for 20 ticks
+        distributedTickTask.runTaskTimer(this, 0L, 1L)
+
         clearBlocksTask = ClearBlocksTask(this)
         clearBlocksTask.runTaskTimer(this, config.getInt("delay").toLong(), config.getInt("interval").toLong())
 
@@ -47,6 +52,7 @@ class BuilderDelight : JavaPlugin() {
 
     override fun onDisable() {
         clearBlocksTask.cancel()
+        distributedTickTask.cancel()
     }
 
     private fun registerListeners() {

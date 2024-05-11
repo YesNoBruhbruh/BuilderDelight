@@ -1,18 +1,14 @@
 package me.maanraj514.builderdelight.tasks
 
-import com.fastasyncworldedit.core.FaweAPI
-import com.fastasyncworldedit.core.extent.processor.lighting.RelightMode
 import com.sk89q.worldedit.WorldEdit
 import com.sk89q.worldedit.bukkit.BukkitAdapter
-import com.sk89q.worldedit.function.operation.Operations
 import com.sk89q.worldedit.math.BlockVector3
 import com.sk89q.worldedit.regions.CuboidRegion
 import com.sk89q.worldedit.regions.Region
-import com.sk89q.worldedit.world.block.BlockTypes
 import me.maanraj514.builderdelight.BuilderDelight
+import me.maanraj514.builderdelight.tasks.filler.DistributedFiller
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitRunnable
-
 
 class ClearBlocksTask(private val plugin: BuilderDelight) : BukkitRunnable() {
 
@@ -33,25 +29,28 @@ class ClearBlocksTask(private val plugin: BuilderDelight) : BukkitRunnable() {
 
         val region = cuboidRegion as Region
 
-        var counter = 0
-
         val task = object : BukkitRunnable() {
+            var counter = 0
             override fun run() {
                 if (counter >= 1){
                     cancel()
                 }
-                session.setBlocks(region, BlockTypes.AIR)
 
-                Operations.complete(session.commit())
+                DistributedFiller(plugin.distributedTickTask, pos1.world, plugin)
+                    .fill(region)
 
-                FaweAPI.fixLighting(session.world, region, null, RelightMode.ALL)
+//                session.setBlocks(region, BlockTypes.AIR)
+
+//                Operations.complete(session.commit())
+
+//                FaweAPI.fixLighting(session.world, region, null, RelightMode.ALL)
 
                 println("cleared blocks.")
                 counter++
             }
         }
 
-        task.runTaskTimerAsynchronously(plugin, 0L, 20L)
+        task.runTaskTimer(plugin, 0L, 20L)
 
         runningTasks.add(task.taskId)
 
