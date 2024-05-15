@@ -9,27 +9,41 @@ import me.maanraj514.builderdelight.command.TestClearCommand
 import me.maanraj514.builderdelight.listener.BuildModeListener
 import me.maanraj514.builderdelight.tasks.ClearBlocksTask
 import me.maanraj514.builderdelight.tasks.DistributedTickTask
+import me.maanraj514.builderdelight.util.JsonUtil
 import me.maanraj514.builderdelight.worldedit.WorldEditListener
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.block.Block
 import org.bukkit.plugin.java.JavaPlugin
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+
 class BuilderDelight : JavaPlugin() {
 
     val builders = mutableSetOf<UUID>()
+    val builderBlocks = mutableListOf<Location>()
+
+    val blocksFile = File(dataFolder.absolutePath + "/blocks.json")
+
     val BUILDER_BLOCK_KEY = NamespacedKey(this, "builderModeBlock")
 
     lateinit var distributedTickTask: DistributedTickTask
     private lateinit var clearBlocksTask: ClearBlocksTask
 
     private val mm = MiniMessage.miniMessage()
+
+    private var canLoad = false
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -41,17 +55,29 @@ class BuilderDelight : JavaPlugin() {
 
         WorldEditListener(this)
 
-        distributedTickTask = DistributedTickTask(20) // 20 for 20 ticks
-        distributedTickTask.runTaskTimer(this, 0L, 1L)
+        distributedTickTask = DistributedTickTask(10000) // 20 for 20 ticks
+        distributedTickTask.runTaskTimer(this, 0L, 20L)
 
-        clearBlocksTask = ClearBlocksTask(this)
-        clearBlocksTask.runTaskTimer(this, config.getInt("delay").toLong(), config.getInt("interval").toLong())
+//        loadBlocks()
+
+        if (canLoad) {
+            println("Can load!")
+
+//          clearBlocksTask = ClearBlocksTask(this)
+//          clearBlocksTask.runTaskTimer(this, config.getInt("delay").toLong(), config.getInt("interval").toLong())
+        }
 
         server.consoleSender.sendMessage("Found WorldEdit! loading support...")
     }
 
     override fun onDisable() {
-        clearBlocksTask.cancel()
+//        saveBlocks()
+        println("builderBlocks size is ${builderBlocks.size}")
+
+        builders.clear()
+        builderBlocks.clear()
+
+//        clearBlocksTask.cancel()
         distributedTickTask.cancel()
     }
 
@@ -71,6 +97,47 @@ class BuilderDelight : JavaPlugin() {
         getCommand("builderdelight-reloadconfig")?.setExecutor(ConfigReloadCommand(this))
 
         getCommand("testclear")?.setExecutor(TestClearCommand(this))
+    }
+
+    private fun loadBlocks() {
+
+        if (!blocksFile.exists()) {
+            blocksFile.createNewFile()
+        }
+
+        val reader = FileReader(blocksFile)
+
+        val blocks: Array<Location> = JsonUtil.fromJson(reader, Array<Location>::class.java) ?: return
+        builderBlocks.addAll(blocks)
+
+        println("Builder-Blocks loaded!")
+
+        canLoad = true
+    }
+
+    fun addBlock(block: Block) {
+        println("called addBlock()!")
+
+        // removes useless customBlockData checking.
+        val type = block.type
+        if (type == Material.AIR) return
+
+        val hasCustomBlock = CustomBlockData.hasCustomBlockData(block, this)
+        if (!hasCustomBlock) return
+
+        val customBlockData = CustomBlockData(block, this)
+        if (customBlockData.has(BUILDER_BLOCK_KEY)) {
+            builderBlocks.add(block.location)
+            println("found a builder-block!")
+        }
+    }
+
+    fun saveBlocks() {
+        val writer = FileWriter(blocksFile, false)
+        JsonUtil.toJson(builderBlocks, writer)
+
+        writer.flush()
+        writer.close()
     }
 
     private fun licenseCheck() {

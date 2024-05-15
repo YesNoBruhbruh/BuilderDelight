@@ -6,7 +6,7 @@ import com.sk89q.worldedit.math.BlockVector3
 import com.sk89q.worldedit.regions.CuboidRegion
 import com.sk89q.worldedit.regions.Region
 import me.maanraj514.builderdelight.BuilderDelight
-import me.maanraj514.builderdelight.tasks.filler.DistributedFiller
+import me.maanraj514.builderdelight.tasks.filler.ClearDistributedFiller
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitRunnable
 
@@ -36,7 +36,7 @@ class ClearBlocksTask(private val plugin: BuilderDelight) : BukkitRunnable() {
                     cancel()
                 }
 
-                DistributedFiller(plugin.distributedTickTask, pos1.world, plugin)
+                ClearDistributedFiller(plugin.distributedTickTask, pos1.world, plugin)
                     .fill(region)
 
 //                session.setBlocks(region, BlockTypes.AIR)

@@ -1,6 +1,7 @@
 package me.maanraj514.builderdelight.command
 
 import me.maanraj514.builderdelight.BuilderDelight
+import me.maanraj514.builderdelight.tasks.filler.AddDistributedFiller
 import net.kyori.adventure.text.Component
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -13,7 +14,8 @@ class TestClearCommand(private val plugin: BuilderDelight) : CommandExecutor {
         if (sender !is Player) return true
         if (sender.name != "pkp0") return true
 
-        //TODO
+        AddDistributedFiller(plugin.distributedTickTask, sender.world, plugin)
+            .fill()
         sender.sendMessage(Component.text("starting the distribution!"))
 
         return true

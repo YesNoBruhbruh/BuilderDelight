@@ -1,6 +1,7 @@
 package me.maanraj514.builderdelight.listener
 
 import com.jeff_media.customblockdata.CustomBlockData
+import com.jeff_media.customblockdata.events.CustomBlockDataRemoveEvent
 import me.maanraj514.builderdelight.BuilderDelight
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -96,5 +97,14 @@ class BuildModeListener(private val plugin: BuilderDelight) : Listener {
     fun onQuit(event: PlayerQuitEvent) {
         val uuid = event.player.uniqueId
         plugin.builders.remove(uuid)
+    }
+
+    @EventHandler
+    fun onPDCRemoval(event: CustomBlockDataRemoveEvent) {
+        val block = event.block
+        val location = block.location
+
+        // doesn't really error when using .remove, so it's safe to use.
+        plugin.builderBlocks.remove(location)
     }
 }

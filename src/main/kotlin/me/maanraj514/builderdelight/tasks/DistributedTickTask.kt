@@ -16,6 +16,8 @@ class DistributedTickTask(private val distributionSize: Int) : BukkitRunnable() 
         for (i in 0 until distributionSize) {
             workloadMatrix.add(LinkedList())
         }
+
+        println("matrix list size is ${workloadMatrix.size}")
     }
 
     fun add(workLoad: WorkLoad) {
