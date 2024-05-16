@@ -1,9 +1,6 @@
 package me.maanraj514.builderdelight.command
 
-import com.google.gson.Gson
 import me.maanraj514.builderdelight.BuilderDelight
-import me.maanraj514.builderdelight.tasks.filler.AddDistributedFiller
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -49,9 +46,6 @@ class PosCommand(private val plugin: BuilderDelight) : CommandExecutor {
                 }
 
                 savePosToConfig(pos1, pos2)
-
-                AddDistributedFiller(plugin.distributedTickTask, pos1.world, plugin)
-                    .fill()
 
                 sender.sendMessage("Successfully saved pos1 and pos2 to the config file!")
                 sender.sendMessage("builderBlocks list size is ${plugin.builderBlocks.size}")
