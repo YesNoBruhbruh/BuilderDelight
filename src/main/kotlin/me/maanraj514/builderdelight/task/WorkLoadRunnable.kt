@@ -1,11 +1,10 @@
 package me.maanraj514.builderdelight.task
 
 import me.maanraj514.builderdelight.task.structure.WorkLoad
-import org.bukkit.scheduler.BukkitRunnable
+import java.util.*
 import java.util.ArrayDeque
-import java.util.Deque
 
-class WorkLoadRunnable : BukkitRunnable() {
+abstract class WorkLoadRunnable : Runnable {
 
     // FOR FUTURE REFERENCE:
 
@@ -20,12 +19,12 @@ class WorkLoadRunnable : BukkitRunnable() {
     // (80 extreme)
     // (100 too fast)
 
-    private val MAX_MILLIS_PER_TICK = 20 // higher amount will allow for more loads to be computed.
-    private val MAX_NANOS_PER_TICK = (MAX_MILLIS_PER_TICK * 1E6).toInt()
-
     private val workLoadDeque: Deque<WorkLoad> = ArrayDeque()
 
-    fun addWorkLoad(workLoad: WorkLoad) {
+    protected var MAX_MILLIS_PER_TICK = 2.5 // higher amount will allow for more loads to be computed.
+    private val MAX_NANOS_PER_TICK = (MAX_MILLIS_PER_TICK * 1E6).toInt()
+
+    open fun addWorkLoad(workLoad: WorkLoad) {
         workLoadDeque.add(workLoad)
     }
 

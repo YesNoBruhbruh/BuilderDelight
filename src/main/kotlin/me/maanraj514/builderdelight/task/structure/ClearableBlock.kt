@@ -5,7 +5,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import java.util.UUID
 
-class PlaceableBlock(
+class ClearableBlock(
     val worldId: UUID,
     val blockX: Int,
     val blockY: Int,
@@ -19,7 +19,7 @@ class PlaceableBlock(
         val location = block.location
 
         if (!plugin.builderBlocks.contains(location)) { // if it isn't a builderBlock
-            plugin.ocelotAPI.updateBlock(block, Material.AIR)
+            //TODO do logic
 //            block.type = Material.AIR
         }
     }

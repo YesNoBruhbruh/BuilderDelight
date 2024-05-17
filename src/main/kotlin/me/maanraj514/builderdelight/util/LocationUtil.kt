@@ -3,7 +3,6 @@ package me.maanraj514.builderdelight.util
 import me.maanraj514.builderdelight.BuilderDelight
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.Material
 
 object LocationUtil {
 
