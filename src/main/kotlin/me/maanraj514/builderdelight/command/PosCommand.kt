@@ -48,7 +48,6 @@ class PosCommand(private val plugin: BuilderDelight) : CommandExecutor {
                 savePosToConfig(pos1, pos2)
 
                 sender.sendMessage("Successfully saved pos1 and pos2 to the config file!")
-                sender.sendMessage("builderBlocks list size is ${plugin.builderBlocks.size}")
             }
         }
 

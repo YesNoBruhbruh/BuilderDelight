@@ -16,9 +16,8 @@ class ClearableBlock(
     override fun compute() {
         val world = Bukkit.getWorld(worldId) ?: return
         val block = world.getBlockAt(blockX, blockY, blockZ)
-        val location = block.location
 
-        if (!plugin.builderBlocks.contains(location)) { // if it isn't a builderBlock
+        if (!plugin.isBuilderBlock(block)) { // if it isn't a builderBlock
             //TODO do logic
 //            block.type = Material.AIR
         }

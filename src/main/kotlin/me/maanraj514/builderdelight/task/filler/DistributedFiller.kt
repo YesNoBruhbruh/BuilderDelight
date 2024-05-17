@@ -11,7 +11,7 @@ class DistributedFiller(
     override fun fill(cornerA: Location, cornerB: Location) {
         val worldId = cornerA.world.uid
 
-        val runnable = plugin.clearBlocksRunnable
+//        val runnable = plugin.clearBlocksRunnable
 
         val topBlockX: Int = cornerA.blockX.coerceAtLeast(cornerB.blockX)
         val bottomBlockX: Int = cornerA.blockX.coerceAtMost(cornerB.blockX)
@@ -25,13 +25,13 @@ class DistributedFiller(
         for (x in bottomBlockX..topBlockX) {
             for (y in bottomBlockY..topBlockY) {
                 for (z in bottomBlockZ..topBlockZ) {
-                    runnable.addWorkLoad(ClearableBlock(
-                        worldId,
-                        x,
-                        y,
-                        z,
-                        plugin
-                    ))
+//                    runnable.addWorkLoad(ClearableBlock(
+//                        worldId,
+//                        x,
+//                        y,
+//                        z,
+//                        plugin
+//                    ))
                 }
             }
         }

@@ -28,7 +28,7 @@ class BuilderDelight : JavaPlugin() {
 //    lateinit var addBlocksRunnable: WorkLoadRunnable
 //    private var addBlocksRunnableId = -1
 
-    lateinit var clearBlocksRunnable: WorkLoadRunnable
+//    lateinit var clearBlocksRunnable: WorkLoadRunnable
     private var clearBlocksRunnableId = -1
 
     override fun onEnable() {
@@ -48,15 +48,15 @@ class BuilderDelight : JavaPlugin() {
 //        addBlocksRunnable = AddBlocksRunnable()
 //        addBlocksRunnableId = Bukkit.getScheduler().runTaskTimer(this, addBlocksRunnable, 0L, 1L).taskId
 
-        clearBlocksRunnable = ScheduledWorkLoadRunnable()
-        clearBlocksRunnableId = Bukkit.getScheduler().runTaskTimer(this, clearBlocksRunnable, 0L, 1L).taskId
+//        clearBlocksRunnable = ScheduledWorkLoadRunnable()
+//        clearBlocksRunnableId = Bukkit.getScheduler().runTaskTimer(this, clearBlocksRunnable, 0L, 1L).taskId
 
         server.consoleSender.sendMessage("Found WorldEdit! loading support...")
     }
 
     override fun onDisable() {
 //        Bukkit.getScheduler().cancelTask(addBlocksRunnableId)
-        Bukkit.getScheduler().cancelTask(clearBlocksRunnableId)
+//        Bukkit.getScheduler().cancelTask(clearBlocksRunnableId)
 
         blocksFile.saveBlocks(builderBlocks)
         blocksFile.save()
@@ -86,8 +86,6 @@ class BuilderDelight : JavaPlugin() {
         val location = block.location
 
         builderBlocks.remove(location) // doesn't error when it doesn't exist anyway
-
-        println("called removeBlock()!")
     }
 
     fun addBlock(block: Block) {
@@ -96,7 +94,13 @@ class BuilderDelight : JavaPlugin() {
         if (builderBlocks.contains(location)) return // already inside.
 
         builderBlocks.add(location)
+    }
 
-        println("called addBlock()!")
+    fun isBuilderBlock(block: Block): Boolean {
+        return isBuilderBlock(block.location)
+    }
+
+    fun isBuilderBlock(location: Location): Boolean {
+        return builderBlocks.contains(location)
     }
 }

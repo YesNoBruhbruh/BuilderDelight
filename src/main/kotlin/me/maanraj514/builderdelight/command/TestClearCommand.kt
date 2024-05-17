@@ -4,18 +4,15 @@ import com.fastasyncworldedit.core.FaweAPI
 import com.fastasyncworldedit.core.extent.processor.lighting.RelightMode
 import com.sk89q.worldedit.WorldEdit
 import com.sk89q.worldedit.bukkit.BukkitAdapter
-import com.sk89q.worldedit.function.mask.Mask
 import com.sk89q.worldedit.function.operation.Operations
-import com.sk89q.worldedit.function.pattern.Pattern
 import com.sk89q.worldedit.math.BlockVector3
 import com.sk89q.worldedit.regions.CuboidRegion
 import com.sk89q.worldedit.regions.Region
+import com.sk89q.worldedit.world.block.BlockTypes
 import me.maanraj514.builderdelight.BuilderDelight
 import me.maanraj514.builderdelight.util.LocationUtil
-import me.maanraj514.builderdelight.worldedit.extent.structure.CustomAirPattern
 import me.maanraj514.builderdelight.worldedit.extent.structure.CustomBlockMask
 import net.kyori.adventure.text.Component
-import org.bukkit.Location
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -41,7 +38,6 @@ class TestClearCommand(private val plugin: BuilderDelight) : CommandExecutor {
 
         val weWorld = BukkitAdapter.adapt(world)
         val session = WorldEdit.getInstance().newEditSession(weWorld)
-        session.mask = CustomBlockMask() // incredibly important!
 
         val cuboidRegion = CuboidRegion(
             BlockVector3.at(pos1.x, pos1.y, pos1.z),
@@ -49,18 +45,16 @@ class TestClearCommand(private val plugin: BuilderDelight) : CommandExecutor {
 
         val region = cuboidRegion as Region
 
-        val pattern = CustomAirPattern(world, plugin)
-
+        session.mask = CustomBlockMask(plugin) // incredibly important!
         val task = object : BukkitRunnable() {
             override fun run() {
 
-                session.setBlocks(region, pattern)
+                session.setBlocks(region, BlockTypes.AIR)
 
                 Operations.complete(session.commit())
 
                 FaweAPI.fixLighting(session.world, region, null, RelightMode.ALL)
 
-                sender.sendMessage("cleared the blocks!")
                 println("cleared blocks.")
             }
         }

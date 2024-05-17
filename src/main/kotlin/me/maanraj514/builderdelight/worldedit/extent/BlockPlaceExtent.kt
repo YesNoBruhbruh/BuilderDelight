@@ -8,6 +8,9 @@ import com.sk89q.worldedit.extent.Extent
 import com.sk89q.worldedit.function.pattern.Pattern
 import com.sk89q.worldedit.regions.Region
 import me.maanraj514.builderdelight.BuilderDelight
+import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.block.Block
 
 class BlockPlaceExtent(
     private val event: EditSessionEvent,
@@ -25,19 +28,29 @@ class BlockPlaceExtent(
         val success = super.setBlocks(region, pattern)
 
         val wePlayer = event.actor as Player
+
+        if (!plugin.builders.contains(wePlayer.uniqueId)) return success // just return.
+
         val world = BukkitAdapter.asBukkitWorld(weWorld).world
 
-        //TODO fix this
+        //TODO make this more performant but it will do for now.
+        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+            for (blockVector3 in region) {
+                val bukkitBlock = world.getBlockAt(blockVector3.x, blockVector3.y, blockVector3.z)
 
-//        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
-//            region.forEach { blockVector3 ->
-//                val bukkitBlock = world.getBlockAt(blockVector3.x, blockVector3.y, blockVector3.z)
-//
-//                handleSetBlockPlayer(wePlayer, bukkitBlock)
-//            }
-//        }, 1L)
+                handleBuilderSetBlock(bukkitBlock)
+            }
+        }, 1L)
 
         return success
+    }
+
+    private fun handleBuilderSetBlock(bukkitBlock: Block) {
+        if (bukkitBlock.type == Material.AIR) {
+            plugin.removeBlock(bukkitBlock)
+        } else {
+            plugin.addBlock(bukkitBlock)
+        }
     }
 
 //    private fun handleSetBlockPlayer(wePlayer: Player, bukkitBlock: Block) {
