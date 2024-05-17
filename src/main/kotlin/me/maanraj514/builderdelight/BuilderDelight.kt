@@ -5,8 +5,7 @@ import me.maanraj514.builderdelight.command.ConfigReloadCommand
 import me.maanraj514.builderdelight.command.PosCommand
 import me.maanraj514.builderdelight.command.TestClearCommand
 import me.maanraj514.builderdelight.listener.BuildModeListener
-import me.maanraj514.builderdelight.task.ScheduledWorkLoadRunnable
-import me.maanraj514.builderdelight.task.WorkLoadRunnable
+import me.maanraj514.builderdelight.task.ClearBlocksTask
 import me.maanraj514.builderdelight.util.Auth
 import me.maanraj514.builderdelight.util.BlocksFile
 import me.maanraj514.builderdelight.worldedit.WorldEditListener
@@ -24,12 +23,7 @@ class BuilderDelight : JavaPlugin() {
 //    val BUILDER_BLOCK_KEY = NamespacedKey(this, "builderModeBlock")
 
     lateinit var blocksFile: BlocksFile
-
-//    lateinit var addBlocksRunnable: WorkLoadRunnable
-//    private var addBlocksRunnableId = -1
-
-//    lateinit var clearBlocksRunnable: WorkLoadRunnable
-    private var clearBlocksRunnableId = -1
+    private lateinit var clearBlocksTask: ClearBlocksTask
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -45,22 +39,23 @@ class BuilderDelight : JavaPlugin() {
         blocksFile = BlocksFile(this)
         builderBlocks.addAll(blocksFile.loadBlocks()) // add all blocks from file to builderBlocks list.
 
-//        addBlocksRunnable = AddBlocksRunnable()
-//        addBlocksRunnableId = Bukkit.getScheduler().runTaskTimer(this, addBlocksRunnable, 0L, 1L).taskId
-
-//        clearBlocksRunnable = ScheduledWorkLoadRunnable()
-//        clearBlocksRunnableId = Bukkit.getScheduler().runTaskTimer(this, clearBlocksRunnable, 0L, 1L).taskId
+        clearBlocksTask = ClearBlocksTask(this)
+        clearBlocksTask.runTaskTimer(this, config.getLong("delay"), config.getLong("interval"))
 
         server.consoleSender.sendMessage("Found WorldEdit! loading support...")
     }
 
     override fun onDisable() {
-//        Bukkit.getScheduler().cancelTask(addBlocksRunnableId)
-//        Bukkit.getScheduler().cancelTask(clearBlocksRunnableId)
-
         blocksFile.saveBlocks(builderBlocks)
         blocksFile.save()
         println("builderBlocks size is ${builderBlocks.size}")
+
+        for (id in clearBlocksTask.tasks) {
+            Bukkit.getScheduler().cancelTask(id)
+        }
+        clearBlocksTask.tasks.clear()
+
+        clearBlocksTask.cancel()
 
         builders.clear()
         builderBlocks.clear()
