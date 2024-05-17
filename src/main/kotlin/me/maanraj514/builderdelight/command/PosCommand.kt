@@ -15,6 +15,8 @@ class PosCommand(private val plugin: BuilderDelight) : CommandExecutor {
     private val pos1Map = mutableMapOf<UUID, Location>()
     private val pos2Map = mutableMapOf<UUID, Location>()
 
+    private var taskId = -1
+
     override fun onCommand(sender: CommandSender, cmd: Command, p2: String, p3: Array<out String>?): Boolean {
         if (sender !is Player) return true
         if (!sender.hasPermission("builderdelight.command.pos")) return true
@@ -43,33 +45,37 @@ class PosCommand(private val plugin: BuilderDelight) : CommandExecutor {
                     return true
                 }
 
-                val minWorld = pos1.world.name
-                val minX = min(pos1.x, pos2.x)
-                val minY = min(pos1.y, pos2.y)
-                val minZ = min(pos1.z, pos2.z)
-
-                val maxWorld = pos2.world.name
-                val maxX = max(pos1.x, pos2.x)
-                val maxY = max(pos1.y, pos2.y)
-                val maxZ = max(pos1.z, pos2.z)
-
-                plugin.config.set("pos1.world", minWorld)
-                plugin.config.set("pos1.x", minX)
-                plugin.config.set("pos1.y", minY)
-                plugin.config.set("pos1.z", minZ)
-
-                plugin.config.set("pos2.world", maxWorld)
-                plugin.config.set("pos2.x", maxX)
-                plugin.config.set("pos2.y", maxY)
-                plugin.config.set("pos2.z", maxZ)
-
-                plugin.saveConfig()
-                plugin.reloadConfig()
+                savePosToConfig(pos1, pos2)
 
                 sender.sendMessage("Successfully saved pos1 and pos2 to the config file!")
             }
         }
 
         return true
+    }
+
+    private fun savePosToConfig(pos1: Location, pos2: Location) {
+        val minWorld = pos1.world.name
+        val minX = min(pos1.x, pos2.x)
+        val minY = min(pos1.y, pos2.y)
+        val minZ = min(pos1.z, pos2.z)
+
+        val maxWorld = pos2.world.name
+        val maxX = max(pos1.x, pos2.x)
+        val maxY = max(pos1.y, pos2.y)
+        val maxZ = max(pos1.z, pos2.z)
+
+        plugin.config.set("pos1.world", minWorld)
+        plugin.config.set("pos1.x", minX)
+        plugin.config.set("pos1.y", minY)
+        plugin.config.set("pos1.z", minZ)
+
+        plugin.config.set("pos2.world", maxWorld)
+        plugin.config.set("pos2.x", maxX)
+        plugin.config.set("pos2.y", maxY)
+        plugin.config.set("pos2.z", maxZ)
+
+        plugin.saveConfig()
+        plugin.reloadConfig()
     }
 }
