@@ -6,8 +6,8 @@ import me.maanraj514.builderdelight.command.PosCommand
 import me.maanraj514.builderdelight.command.TestClearCommand
 import me.maanraj514.builderdelight.listener.BuildModeListener
 import me.maanraj514.builderdelight.task.ClearBlocksTask
-import me.maanraj514.builderdelight.util.Auth
 import me.maanraj514.builderdelight.util.BlocksFile
+import me.maanraj514.builderdelight.util.License
 import me.maanraj514.builderdelight.worldedit.WorldEditListener
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -28,8 +28,10 @@ class BuilderDelight : JavaPlugin() {
     override fun onEnable() {
         saveDefaultConfig()
 
-        Auth.licenseCheck(this)
-        Auth.checkIp(this)
+        val licenseKey = config.getString("license-key") ?: "No License"
+        if (!License.isLicenseValid(licenseKey, this)) {
+            Bukkit.getPluginManager().disablePlugin(this)
+        }
 
         registerCommands()
         registerListeners()
