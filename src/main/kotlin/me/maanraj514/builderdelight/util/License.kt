@@ -17,49 +17,51 @@ import kotlin.collections.ArrayList
 
 object License {
 
-    private val URL: String = "https://lunarmc.codava.net"
+    private const val URL: String = "https://lunarmc.codava.net"
 
-    private val PRODUCT: String = "YOURPRODUCT"
+    private const val PRODUCT: String = "BuilderDelight"
 
     fun isLicenseValid(id: String, plugin: BuilderDelight): Boolean {
 
-        val logger = plugin.logger
+        val consoleSender = plugin.server.consoleSender
 
         if (!isAlive()) {
 
-            logger.info("§4------------------")
-            logger.info("§4------------------")
-            logger.info("§4PLEASE CONTACT THE AUTHOR ON YOUR DISCORD")
-            logger.info("§4NOTE: THE PLUGIN HAS BEEN ENABLED.")
-            logger.info("§4------------------")
-            logger.info("§4------------------")
+            consoleSender.sendColorizedMessage("<red>------------------</red>")
+            consoleSender.sendColorizedMessage("<red>------------------</red>")
+            consoleSender.sendColorizedMessage("<red>PLEASE CONTACT THE AUTHOR ON YOUR DISCORD</red>")
+            consoleSender.sendColorizedMessage("<red>NOTE: THE PLUGIN HAS BEEN ENABLED.</red>")
+            consoleSender.sendColorizedMessage("<red>------------------</red>")
+            consoleSender.sendColorizedMessage("<red>------------------</red>")
+
             return true
         }
 
         val licenseData = getLicenseById(id)
 
         if (licenseData == null || licenseData.product != PRODUCT) {
-            logger.info("§4------------------")
-            logger.info("§4------------------")
-            logger.info("§4INVALID LICENSE KEY '$id'")
-            logger.info("§4")
-            logger.info("§4PLEASE CONTACT THE AUTHOR ON YOUR DISCORD")
-            logger.info("§4TO GET YOURPRODUCT LICENSE KEY.")
-            logger.info("§4------------------")
-            logger.info("§4------------------")
+            consoleSender.sendColorizedMessage("<red>------------------</red>")
+            consoleSender.sendColorizedMessage("<red>------------------</red>")
+            consoleSender.sendColorizedMessage("<red>INVALID LICENSE KEY '$id'</red>")
+            consoleSender.sendColorizedMessage("<red></red>")
+            consoleSender.sendColorizedMessage("<red>PLEASE CONTACT THE AUTHOR ON YOUR DISCORD</red>")
+            consoleSender.sendColorizedMessage("<red>TO GET $PRODUCT LICENSE KEY.</red>")
+            consoleSender.sendColorizedMessage("<red>------------------</red>")
+            consoleSender.sendColorizedMessage("<red>------------------</red>")
+
             return false
         }
 
 
         val dateFormat = SimpleDateFormat()
 
-        logger.info("§a-------------------")
-        logger.info("§fLicense Key: §2" + id.substring(0, id.length / 5) + "**********")
-        logger.info("§fOwner: §2" + licenseData.owner)
-        logger.info("§fCreation Date: §2" + dateFormat.format(Date(licenseData.creation_date)))
-        logger.info("§fProduct: §2" + licenseData.product)
-        logger.info("§fAllowed IPs: §2" + licenseData.ips.toString())
-        logger.info("§a-------------------")
+        consoleSender.sendColorizedMessage("<green>-------------------</green>")
+        consoleSender.sendColorizedMessage("<green>License Key: ${id.substring(0, id.length / 5)}**********</green>")
+        consoleSender.sendColorizedMessage("<green>Owner: ${licenseData.owner}</green>")
+        consoleSender.sendColorizedMessage("<green>Creation Date: ${dateFormat.format(Date(licenseData.creation_date))}</green>")
+        consoleSender.sendColorizedMessage("<green>Product: ${licenseData.product}</green>")
+        consoleSender.sendColorizedMessage("<green>Allowed IPs: ${licenseData.ips}</green>")
+        consoleSender.sendColorizedMessage("<green>-------------------</green>")
 
         return true
     }
@@ -104,7 +106,6 @@ object License {
             val response: HttpResponse<String> = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
 
             if (response.statusCode() != 200) return null
-
 
             val gson = Gson()
 
