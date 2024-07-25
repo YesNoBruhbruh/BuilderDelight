@@ -3,26 +3,9 @@ version: 1.0
 main: me.maanraj514.builderdelight.BuilderDelight
 api-version: 1.20
 commands:
-  pos1:
-    description: Sets pos1
-    usage: /pos1
-  pos2:
-    description: Sets pos2
-    usage: /pos2
-  savePos:
-    description: Saves pos1 and pos2 to the config file
-    usage: /savePos
   buildmode:
     description: Gets you into build mode!
     usage: /buildmode
-  builderdelight-reloadconfig:
-    description: Reloads the config file
-    usage: /builderdelight-reloadconfig
-  testclear:
 permissions:
   builderdelight.command.buildmode:
     description: Allows you to get into build mode
-  builderdelight.command.pos:
-    description: Allows you to set pos1 and pos2
-  builderdeight.command.reloadconfig:
-    description: Allows you to reload the config file
