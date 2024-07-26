@@ -12,7 +12,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
 
-class BlockPlaceExtent(
+class BlockPlaceExtentFAWE(
     private val event: EditSessionEvent,
     extent: Extent,
     private val weWorld: com.sk89q.worldedit.world.World,

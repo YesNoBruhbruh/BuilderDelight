@@ -3,7 +3,8 @@ package me.maanraj514.builderdelight
 import me.maanraj514.builderdelight.command.BuildModeCommand
 import me.maanraj514.builderdelight.listener.BuildModeListener
 import me.maanraj514.builderdelight.util.BlocksFile
-import me.maanraj514.builderdelight.worldedit.WorldEditListener
+import me.maanraj514.builderdelight.worldedit.FAWEListener
+import me.maanraj514.builderdelight.worldedit.WEListener
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.block.Block
@@ -28,10 +29,22 @@ class BuilderDelight : JavaPlugin() {
 //            Bukkit.getPluginManager().disablePlugin(this)
 //        }
 
+        val pluginManager = server.pluginManager
+
+        for (plugin in pluginManager.plugins) {
+            if (plugin.name == "FastAsyncWorldEdit") {
+                FAWEListener(this)
+                server.consoleSender.sendMessage("Found FastAsyncWorldEdit! loading support...")
+                break
+            } else if (plugin.name == "WorldEdit") {
+                WEListener(this)
+                server.consoleSender.sendMessage("Found WorldEdit! loading support...")
+                break
+            }
+        }
+
         registerCommands()
         registerListeners()
-
-        WorldEditListener(this)
 
         blocksFile = BlocksFile(this)
         builderBlocks.addAll(blocksFile.loadBlocks()) // add all blocks from file to builderBlocks list.
