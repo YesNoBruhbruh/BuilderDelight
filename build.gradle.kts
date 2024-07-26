@@ -10,7 +10,7 @@ repositories {
     mavenCentral()
 //    mavenLocal() needed for NMS
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://maven.enginehub.org/repo/") // WorldEdit
+//    maven("https://maven.enginehub.org/repo/") // WorldEdit
     maven("https://maven.respark.dev/releases") // FAWE
     maven("https://jitpack.io")
 }
@@ -18,7 +18,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 //    compileOnly("org.spigotmc:spigot:1.20.4-R0.1-SNAPSHOT")
-//    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.20")
+//    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0")
 
     implementation(platform("com.intellectualsites.bom:bom-newest:1.44")) // Ref: https://github.com/IntellectualSites/bom
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
