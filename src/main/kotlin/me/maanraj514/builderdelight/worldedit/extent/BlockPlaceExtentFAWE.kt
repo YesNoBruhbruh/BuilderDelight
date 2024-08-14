@@ -6,7 +6,9 @@ import com.sk89q.worldedit.event.extent.EditSessionEvent
 import com.sk89q.worldedit.extent.AbstractDelegateExtent
 import com.sk89q.worldedit.extent.Extent
 import com.sk89q.worldedit.function.pattern.Pattern
+import com.sk89q.worldedit.math.BlockVector3
 import com.sk89q.worldedit.regions.Region
+import com.sk89q.worldedit.world.block.BlockStateHolder
 import me.maanraj514.builderdelight.BuilderDelight
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -19,8 +21,41 @@ class BlockPlaceExtentFAWE(
     private val plugin: BuilderDelight
 ) : AbstractDelegateExtent(extent) {
 
+    //paste
+    override fun <T : BlockStateHolder<T>?> setBlock(x: Int, y: Int, z: Int, block: T): Boolean {
+        println("setBlock1: $x, $y, $z, $block")
+
+        if (event.actor !is Player) {
+            return super.setBlock(x, y, z, block)
+        }
+
+        val success = super.setBlock(x, y, z, block)
+
+        val wePlayer = event.actor as Player
+
+        if (!plugin.builders.contains(wePlayer.uniqueId)) return success // just return.
+
+        val world = BukkitAdapter.asBukkitWorld(weWorld).world
+
+        //TODO make this more performant but it will do for now.
+        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+            val bukkitBlock = world.getBlockAt(x, y, z)
+
+            handleBuilderSetBlock(bukkitBlock)
+        }, 1L)
+
+        return success
+    }
+
+    //cut
+    override fun <T : BlockStateHolder<T>?> setBlock(position: BlockVector3?, block: T): Boolean {
+        println("setBlock2: $position, $block")
+        return super.setBlock(position, block)
+    }
+
     // this is for the commands.
     override fun setBlocks(region: Region, pattern: Pattern): Int {
+        println("setBlocks: $region, $pattern")
         if (event.actor !is Player) {
             return super.setBlocks(region, pattern)
         }
