@@ -3,6 +3,7 @@ package me.maanraj514.builderdelight
 import me.maanraj514.builderdelight.command.BuildModeCommand
 import me.maanraj514.builderdelight.listener.BuildModeListener
 import me.maanraj514.builderdelight.util.BlocksFile
+import me.maanraj514.builderdelight.util.License
 import me.maanraj514.builderdelight.worldedit.FAWEListener
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -22,7 +23,6 @@ class BuilderDelight : JavaPlugin() {
     override fun onEnable() {
         saveDefaultConfig()
 
-        //TODO this is disabled as this is a dev build of the plugin.
 //        val licenseKey = config.getString("license-key") ?: "No License"
 //        if (!License.isLicenseValid(licenseKey, this)) {
 //            Bukkit.getPluginManager().disablePlugin(this)
