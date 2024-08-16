@@ -3,7 +3,6 @@ package me.maanraj514.builderdelight
 import me.maanraj514.builderdelight.command.BuildModeCommand
 import me.maanraj514.builderdelight.listener.BuildModeListener
 import me.maanraj514.builderdelight.util.BlocksFile
-import me.maanraj514.builderdelight.util.License
 import me.maanraj514.builderdelight.worldedit.FAWEListener
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -14,11 +13,13 @@ import java.util.*
 class BuilderDelight : JavaPlugin() {
 
     val builders = mutableSetOf<UUID>()
-    val builderBlocks = mutableListOf<Location>()
+    val builderBlocks = mutableSetOf<Location>()
 
 //    val BUILDER_BLOCK_KEY = NamespacedKey(this, "builderModeBlock")
 
     lateinit var blocksFile: BlocksFile
+
+    private var saveTask = -1
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -40,10 +41,25 @@ class BuilderDelight : JavaPlugin() {
 
         blocksFile = BlocksFile(this)
         builderBlocks.addAll(blocksFile.loadBlocks()) // add all blocks from file to builderBlocks list.
+
+        if (config.getBoolean("save-task.enabled", true)) {
+
+            val seconds = config.getInt("save-task.interval", 60)
+
+            saveTask = Bukkit.getScheduler().runTaskTimer(this, Runnable {
+                blocksFile.saveBlocks(builderBlocks.toList())
+                blocksFile.save()
+            }, 0, (seconds * 20).toLong()).taskId
+        }
     }
 
     override fun onDisable() {
-        blocksFile.saveBlocks(builderBlocks)
+
+        if (saveTask != -1) {
+            Bukkit.getScheduler().cancelTask(saveTask)
+        }
+
+        blocksFile.saveBlocks(builderBlocks.toList())
         blocksFile.save()
         println("builderBlocks size is ${builderBlocks.size}")
 
