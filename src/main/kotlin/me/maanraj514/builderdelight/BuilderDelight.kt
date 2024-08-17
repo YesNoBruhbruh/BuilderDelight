@@ -16,7 +16,6 @@ import java.io.File
 import java.sql.Connection
 import java.util.*
 
-
 class BuilderDelight : JavaPlugin() {
 
     val builders = mutableSetOf<UUID>()
@@ -90,16 +89,10 @@ class BuilderDelight : JavaPlugin() {
 
     fun addBlock(location: Location) {
         //TODO
-    }
-
-    fun addBlock(block: Block) {
-        val location = block.location
 
         connection.prepareStatement("INSERT INTO builder_blocks (location) VALUES (?)").use { preparedStatement ->
             preparedStatement.setString(1, LocationUtil.serialize(location))
             preparedStatement.executeUpdate()
         }
-
-        //TODO
     }
 }
