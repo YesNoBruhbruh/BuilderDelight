@@ -16,10 +16,11 @@ class BuildModeListener(private val plugin: BuilderDelight) : Listener {
         val player = event.player
         val uuid = player.uniqueId
 
-        if (plugin.builders.contains(uuid)) {
-            val block = event.block
-            plugin.addBlock(block)
-        }
+        //TODO
+//        if (plugin.builders.contains(uuid)) {
+//            val block = event.block
+//            plugin.addBlock(block)
+//        }
     }
 
     @EventHandler

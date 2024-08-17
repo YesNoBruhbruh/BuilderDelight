@@ -8,8 +8,10 @@ import com.sk89q.worldedit.extent.Extent
 import com.sk89q.worldedit.function.pattern.Pattern
 import com.sk89q.worldedit.regions.Region
 import com.sk89q.worldedit.world.block.BlockStateHolder
+import com.sk89q.worldedit.world.registry.BlockMaterial
 import me.maanraj514.builderdelight.BuilderDelight
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
 
@@ -36,11 +38,9 @@ class BlockPlaceExtentFAWE(
 
         val world = BukkitAdapter.asBukkitWorld(weWorld).world
 
-        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
-            val bukkitBlock = world.getBlockAt(x, y, z)
-
-            handleBuilderSetBlock(bukkitBlock)
-        }, 1L)
+        if (block != null) {
+            handleBuilderSetBlock(Location(world, x.toDouble(), y.toDouble(), z.toDouble()), block.material)
+        }
 
         return success
     }
@@ -66,22 +66,22 @@ class BlockPlaceExtentFAWE(
 
         val world = BukkitAdapter.asBukkitWorld(weWorld).world
 
-        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
-            for (blockVector3 in region) {
-                val bukkitBlock = world.getBlockAt(blockVector3.x, blockVector3.y, blockVector3.z)
-
-                handleBuilderSetBlock(bukkitBlock)
-            }
-        }, 1L)
+        for (blockVector3 in region) {
+            handleBuilderSetBlock(Location(
+                world,
+                blockVector3.x.toDouble(),
+                blockVector3.y.toDouble(),
+                blockVector3.z.toDouble()), pattern.applyBlock(blockVector3).material)
+        }
 
         return success
     }
 
-    private fun handleBuilderSetBlock(bukkitBlock: Block) {
-        if (bukkitBlock.type == Material.AIR) {
-            plugin.removeBlock(bukkitBlock)
+    private fun handleBuilderSetBlock(location: Location, material: BlockMaterial) {
+        if (material.isAir) {
+            plugin.removeBlock(location)
         } else {
-            plugin.addBlock(bukkitBlock)
+            plugin.addBlock(location)
         }
     }
 

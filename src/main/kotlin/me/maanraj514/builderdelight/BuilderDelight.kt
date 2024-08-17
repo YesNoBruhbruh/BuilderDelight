@@ -9,6 +9,7 @@ import me.maanraj514.builderdelight.listener.BuildModeListener
 import me.maanraj514.builderdelight.util.LocationUtil
 import me.maanraj514.builderdelight.worldedit.FAWEListener
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
@@ -114,6 +115,14 @@ class BuilderDelight : JavaPlugin() {
         //TODO
 
 //        builderBlocks.remove(location) // doesn't error when it doesn't exist anyway
+    }
+
+    fun removeBlock(location: Location) {
+        //TODO
+    }
+
+    fun addBlock(location: Location) {
+        //TODO
     }
 
     fun addBlock(block: Block) {
