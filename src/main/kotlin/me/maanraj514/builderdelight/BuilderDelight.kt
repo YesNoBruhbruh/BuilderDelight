@@ -48,7 +48,6 @@ class BuilderDelight : JavaPlugin() {
 
             saveTask = Bukkit.getScheduler().runTaskTimer(this, Runnable {
                 blocksFile.saveBlocks(builderBlocks.toList())
-                blocksFile.save()
             }, 0, (seconds * 20).toLong()).taskId
         }
     }
@@ -60,7 +59,6 @@ class BuilderDelight : JavaPlugin() {
         }
 
         blocksFile.saveBlocks(builderBlocks.toList())
-        blocksFile.save()
         println("builderBlocks size is ${builderBlocks.size}")
 
         builders.clear()
