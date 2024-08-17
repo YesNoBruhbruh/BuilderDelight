@@ -29,7 +29,8 @@ class BuildModeListener(private val plugin: BuilderDelight) : Listener {
 
         val block = event.block
 
-        if (!plugin.isBuilderBlock(block)) return // just a normal block
+        //TODO
+//        if (!plugin.isBuilderBlock(block)) return // just a normal block
         // now it's a builder block.
 
         // if they are a normal person, they can't break a builderBlock.
@@ -62,20 +63,22 @@ class BuildModeListener(private val plugin: BuilderDelight) : Listener {
     @EventHandler
     fun onEntityExplode(event: EntityExplodeEvent) {
         for (block in event.blockList()) {
-            if (plugin.isBuilderBlock(block)) {
-                event.isCancelled = true
-                return
-            }
+            //TODO
+//            if (plugin.isBuilderBlock(block)) {
+//                event.isCancelled = true
+//                return
+//            }
         }
     }
 
     @EventHandler
     fun onBlockExplode(event: BlockExplodeEvent) {
         for (block in event.blockList()) {
-            if (plugin.isBuilderBlock(block)) {
-                event.isCancelled = true
-                return
-            }
+            //TODO
+//            if (plugin.isBuilderBlock(block)) {
+//                event.isCancelled = true
+//                return
+//            }
         }
     }
 
