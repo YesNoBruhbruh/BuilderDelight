@@ -6,6 +6,7 @@ import me.maanraj514.builderdelight.database.DatabaseManager
 import me.maanraj514.builderdelight.database.sql.SQLTableBuilder
 import me.maanraj514.builderdelight.database.sql.SQLiteDatabase
 import me.maanraj514.builderdelight.listener.BuildModeListener
+import me.maanraj514.builderdelight.util.LocationUtil
 import me.maanraj514.builderdelight.worldedit.FAWEListener
 import org.bukkit.Bukkit
 import org.bukkit.block.Block
@@ -13,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.sql.Connection
 import java.util.*
+
 
 class BuilderDelight : JavaPlugin() {
 
@@ -86,9 +88,8 @@ class BuilderDelight : JavaPlugin() {
         val sqLiteDatabase = SQLiteDatabase(dataFolder.absolutePath + "/blocks.db", object : ConnectedCallback {
             override fun onConnected(connection: Connection) {
                 SQLTableBuilder("builder_blocks")
-                    .addField("block", SQLTableBuilder.DataType.VARCHAR, 100)
                     .addField("location", SQLTableBuilder.DataType.VARCHAR, 100)
-                    .setPrimaryKey("block")
+                    .setPrimaryKey("location")
                     .execute(connection)
             }
 
@@ -117,6 +118,13 @@ class BuilderDelight : JavaPlugin() {
 
     fun addBlock(block: Block) {
         val location = block.location
+
+        val connection = databaseManager.getDatabase("blocks")?.getConnection() ?: return
+
+        connection.prepareStatement("INSERT INTO builder_blocks (location) VALUES (?)").use { preparedStatement ->
+            preparedStatement.setString(1, LocationUtil.serialize(location))
+            preparedStatement.executeUpdate()
+        }
 
         //TODO
 

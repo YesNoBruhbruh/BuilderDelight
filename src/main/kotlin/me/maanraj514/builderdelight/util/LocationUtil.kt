@@ -48,4 +48,23 @@ object LocationUtil {
 
         return locations
     }
+
+    fun serialize(block: Location): String {
+        val world = block.world.name
+        val x = block.x
+        val y = block.y
+        val z = block.z
+
+        return "$world, $x, $y, $z"
+    }
+
+    fun deserialize(string: String): Location {
+        val args = string.split(", ") // will make world x y z into diff args.
+        val world = Bukkit.getWorld(args[0])
+        val x = args[1].toDouble()
+        val y = args[2].toDouble()
+        val z = args[3].toDouble()
+
+        return Location(world, x, y, z)
+    }
 }
