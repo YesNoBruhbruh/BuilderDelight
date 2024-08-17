@@ -1,36 +1,31 @@
 package me.maanraj514.builderdelight.util
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonParser
 import me.maanraj514.builderdelight.BuilderDelight
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.configuration.file.YamlConfiguration
+import org.json.simple.JSONArray
+import org.json.simple.JSONObject
 import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
+
 
 class BlocksFile(
     plugin: BuilderDelight
 ) {
 
-    private val blocksFile = File(plugin.dataFolder.absolutePath + "/blocks.yml")
-    private val configuration = YamlConfiguration()
+    private val blocksFile = File(plugin.dataFolder.absolutePath, "/builder-blocks.json")
 
     init {
         if (!blocksFile.exists()) {
             blocksFile.createNewFile()
         }
-
-        configuration.load(blocksFile)
-    }
-
-    fun save() {
-        configuration.save(blocksFile)
-    }
-
-    fun reload() {
-        configuration.load(blocksFile)
     }
 
     fun saveBlocks(blocks: List<Location>) {
-        val path = "builder-blocks"
         val serializedBlocks = mutableListOf<String>()
 
         for (block in blocks) {
@@ -39,21 +34,64 @@ class BlocksFile(
             serializedBlocks.add(blockToString)
         }
 
-        configuration.set(path, null) // to reset the blocks.
-        configuration.set(path, serializedBlocks) // add the existing + new ones.
+        val gson = GsonBuilder().setPrettyPrinting().create()
+
+        val jsonArray = JSONArray()
+        serializedBlocks.forEach {
+            jsonArray.add(it)
+        }
+
+        val jsonObject = JSONObject()
+        jsonObject["blocks"] = jsonArray
+
+        val jsonString = gson.toJson(jsonObject)
+
+        val fileWriter = FileWriter(blocksFile, false)
+        fileWriter.write(jsonString)
+        fileWriter.flush()
+        fileWriter.close()
     }
 
     fun loadBlocks(): List<Location> {
         val blocks = mutableListOf<Location>()
-        val blocksList = configuration.getStringList("builder-blocks")
 
-        for (block in blocksList) {
-            val stringToBlock = deserialize(block)
+        if (blocksFile.length() <= 3L) return blocks
 
-            blocks.add(stringToBlock)
+        val parser = JsonParser()
+        val parsed = parser.parse(FileReader(blocksFile))
+        val jsonObject = parsed.asJsonObject
+
+        val blocksJson = jsonObject.get("blocks").asJsonArray
+        for (block in blocksJson) {
+            val location = deserialize(block.asString)
+
+            blocks.add(location)
         }
 
         return blocks
+    }
+
+    fun jsonToLoc(obj: JSONObject): Location {
+        return Location(
+            Bukkit.getWorld(obj["world"].toString()),
+            obj["x"].toString().toDouble(),
+            obj["y"].toString().toDouble(),
+            obj["z"].toString().toDouble(),
+            obj["yaw"].toString().toFloat(),
+            obj["pitch"].toString().toFloat()
+        )
+    }
+
+    // Location to Json
+    fun locToJson(loc: Location): JSONObject {
+        val jso = JSONObject()
+        jso["world"] = loc.world.name
+        jso["x"] = loc.x
+        jso["y"] = loc.y
+        jso["z"] = loc.z
+        jso["yaw"] = loc.yaw
+        jso["pitch"] = loc.pitch
+        return jso
     }
 
     private fun serialize(block: Location): String {
