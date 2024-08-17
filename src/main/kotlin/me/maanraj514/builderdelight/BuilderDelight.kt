@@ -85,8 +85,10 @@ class BuilderDelight : JavaPlugin() {
 
         val sqLiteDatabase = SQLiteDatabase(dataFolder.absolutePath + "/blocks.db", object : ConnectedCallback {
             override fun onConnected(connection: Connection) {
-                SQLTableBuilder("builder_blocks", "block")
+                SQLTableBuilder("builder_blocks")
+                    .addField("block", SQLTableBuilder.DataType.VARCHAR, 100)
                     .addField("location", SQLTableBuilder.DataType.VARCHAR, 100)
+                    .setPrimaryKey("block")
                     .execute(connection)
             }
 
