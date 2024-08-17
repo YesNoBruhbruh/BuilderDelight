@@ -28,7 +28,7 @@ class BuildModeListener(private val plugin: BuilderDelight) : Listener {
         val player = event.player
         val uuid = player.uniqueId
 
-        val block = event.block
+        val location = event.block.location
 
         //TODO
 //        if (!plugin.isBuilderBlock(block)) return // just a normal block
@@ -41,7 +41,7 @@ class BuildModeListener(private val plugin: BuilderDelight) : Listener {
         }
 
         // now they are a builder, we remove the block from the list.
-        plugin.removeBlock(block)
+        plugin.removeBlock(location)
     }
 
 //    @EventHandler

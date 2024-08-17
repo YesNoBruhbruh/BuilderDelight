@@ -20,15 +20,10 @@ import java.util.*
 class BuilderDelight : JavaPlugin() {
 
     val builders = mutableSetOf<UUID>()
-//    val builderBlocks = mutableSetOf<Location>()
-
-//    val BUILDER_BLOCK_KEY = NamespacedKey(this, "builderModeBlock")
-
-//    lateinit var blocksFile: BlocksFile
 
     lateinit var databaseManager: DatabaseManager
 
-//    private var saveTask = -1
+    private lateinit var connection: Connection
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -51,33 +46,12 @@ class BuilderDelight : JavaPlugin() {
 
         registerCommands()
         registerListeners()
-
-//        blocksFile = BlocksFile(this)
-//        builderBlocks.addAll(blocksFile.loadBlocks()) // add all blocks from file to builderBlocks list.
-
-//        if (config.getBoolean("save-task.enabled", true)) {
-//
-//            val seconds = config.getInt("save-task.interval", 60)
-//
-//            saveTask = Bukkit.getScheduler().runTaskTimer(this, Runnable {
-//                blocksFile.saveBlocks(builderBlocks.toList())
-//            }, 0, (seconds * 20).toLong()).taskId
-//        }
     }
 
     override fun onDisable() {
-
         databaseManager.disconnectAll()
 
-//        if (saveTask != -1) {
-//            Bukkit.getScheduler().cancelTask(saveTask)
-//        }
-
-//        blocksFile.saveBlocks(builderBlocks.toList())
-//        println("builderBlocks size is ${builderBlocks.size}")
-
         builders.clear()
-//        builderBlocks.clear()
     }
 
     private fun setupDatabase() {
@@ -98,6 +72,7 @@ class BuilderDelight : JavaPlugin() {
             }
 
         })
+        connection = sqLiteDatabase.getConnection()
         databaseManager.createDatabase("blocks", sqLiteDatabase)
     }
 
@@ -107,14 +82,6 @@ class BuilderDelight : JavaPlugin() {
 
     private fun registerCommands() {
         getCommand("buildmode")?.setExecutor(BuildModeCommand(this))
-    }
-
-    fun removeBlock(block: Block) {
-        val location = block.location
-
-        //TODO
-
-//        builderBlocks.remove(location) // doesn't error when it doesn't exist anyway
     }
 
     fun removeBlock(location: Location) {
@@ -128,25 +95,11 @@ class BuilderDelight : JavaPlugin() {
     fun addBlock(block: Block) {
         val location = block.location
 
-        val connection = databaseManager.getDatabase("blocks")?.getConnection() ?: return
-
         connection.prepareStatement("INSERT INTO builder_blocks (location) VALUES (?)").use { preparedStatement ->
             preparedStatement.setString(1, LocationUtil.serialize(location))
             preparedStatement.executeUpdate()
         }
 
         //TODO
-
-//        if (builderBlocks.contains(location)) return // already inside.
-//
-//        builderBlocks.add(location)
     }
-
-//    fun isBuilderBlock(block: Block): Boolean {
-//        return isBuilderBlock(block.location)
-//    }
-//
-//    fun isBuilderBlock(location: Location): Boolean {
-//        return builderBlocks.contains(location)
-//    }
 }
