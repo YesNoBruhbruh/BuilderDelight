@@ -25,7 +25,7 @@ class BlocksFile(
         }
     }
 
-    fun saveBlocks(blocks: List<Location>) {
+    fun saveBlocks(blocks: HashSet<Location>) {
         val serializedBlocks = mutableListOf<String>()
 
         for (block in blocks) {
