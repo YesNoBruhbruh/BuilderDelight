@@ -24,7 +24,9 @@ dependencies {
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit") { isTransitive = false }
 
-    implementation("dev.respark.licensegate:license-gate:1.0.3")
+    implementation("com.h2database:h2:2.3.232")
+
+//    implementation("dev.respark.licensegate:license-gate:1.0.3")
 }
 
 kotlin {

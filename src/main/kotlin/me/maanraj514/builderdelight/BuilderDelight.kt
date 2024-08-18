@@ -3,14 +3,13 @@ package me.maanraj514.builderdelight
 import me.maanraj514.builderdelight.command.BuildModeCommand
 import me.maanraj514.builderdelight.database.ConnectedCallback
 import me.maanraj514.builderdelight.database.DatabaseManager
+import me.maanraj514.builderdelight.database.sql.H2Database
 import me.maanraj514.builderdelight.database.sql.SQLTableBuilder
-import me.maanraj514.builderdelight.database.sql.SQLiteDatabase
 import me.maanraj514.builderdelight.listener.BuildModeListener
 import me.maanraj514.builderdelight.util.LocationUtil
 import me.maanraj514.builderdelight.worldedit.FAWEListener
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.block.Block
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.sql.Connection
@@ -59,7 +58,7 @@ class BuilderDelight : JavaPlugin() {
             dbFile.createNewFile()
         }
 
-        val sqLiteDatabase = SQLiteDatabase(dataFolder.absolutePath + "/blocks.db", object : ConnectedCallback {
+        val h2Database = H2Database(dataFolder.absolutePath + "/blocks", object : ConnectedCallback {
             override fun onConnected(connection: Connection) {
                 SQLTableBuilder("builder_blocks")
                     .addField("location", SQLTableBuilder.DataType.VARCHAR, 100)
@@ -71,8 +70,8 @@ class BuilderDelight : JavaPlugin() {
             }
 
         })
-        connection = sqLiteDatabase.getConnection()
-        databaseManager.createDatabase("blocks", sqLiteDatabase)
+        connection = h2Database.getConnection()
+        databaseManager.createDatabase("blocks", h2Database)
     }
 
     private fun registerListeners() {
