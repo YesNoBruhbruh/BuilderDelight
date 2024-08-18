@@ -23,7 +23,7 @@ class BuilderDelight : JavaPlugin() {
     val builders = mutableSetOf<UUID>()
     val builderBlocks = HashSet<Location>()
 
-    lateinit var databaseManager: DatabaseManager
+    private lateinit var databaseManager: DatabaseManager
 
     private lateinit var connection: Connection
 
