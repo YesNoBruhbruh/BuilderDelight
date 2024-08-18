@@ -6,28 +6,22 @@ import me.maanraj514.builderdelight.database.DatabaseManager
 import me.maanraj514.builderdelight.database.sql.H2Database
 import me.maanraj514.builderdelight.database.sql.SQLTableBuilder
 import me.maanraj514.builderdelight.listener.BuildModeListener
-import me.maanraj514.builderdelight.util.BlocksFile
 import me.maanraj514.builderdelight.util.LocationUtil
 import me.maanraj514.builderdelight.worldedit.FAWEListener
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.block.Block
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.sql.Connection
 import java.util.*
-import kotlin.collections.HashSet
 
 class BuilderDelight : JavaPlugin() {
 
     val builders = mutableSetOf<UUID>()
-    val builderBlocks = HashSet<Location>()
 
     private lateinit var databaseManager: DatabaseManager
 
     private lateinit var connection: Connection
-
-    lateinit var blocksFile: BlocksFile
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -44,25 +38,18 @@ class BuilderDelight : JavaPlugin() {
 
         databaseManager = DatabaseManager()
 
-//        setupDatabase()
+        setupDatabase()
 
         FAWEListener(this)
 
         registerCommands()
         registerListeners()
-
-        blocksFile = BlocksFile(this)
-        builderBlocks.addAll(blocksFile.loadBlocks())
     }
 
     override fun onDisable() {
         databaseManager.disconnectAll()
 
-        blocksFile.saveBlocks(builderBlocks)
-        println("builderBlocks size is ${builderBlocks.size}")
-
         builders.clear()
-        builderBlocks.clear()
     }
 
     private fun setupDatabase() {
@@ -96,48 +83,15 @@ class BuilderDelight : JavaPlugin() {
     }
 
     fun removeBlock(location: Location) {
-        builderBlocks.remove(location)
+        //TODO
     }
-
-    fun removeBlock(block: Block) {
-        val location = block.location
-
-        builderBlocks.remove(location) // doesn't error when it doesn't exist anyway
-    }
-
 
     fun addBlock(location: Location) {
-        if (builderBlocks.contains(location)) return // already inside.
+        //TODO
 
-        builderBlocks.add(location)
+        connection.prepareStatement("INSERT INTO builder_blocks (location) VALUES (?)").use { preparedStatement ->
+            preparedStatement.setString(1, LocationUtil.serialize(location))
+            preparedStatement.executeUpdate()
+        }
     }
-
-    fun addBlock(block: Block) {
-        val location = block.location
-
-        if (builderBlocks.contains(location)) return // already inside.
-
-        builderBlocks.add(location)
-    }
-
-    fun isBuilderBlock(block: Block): Boolean {
-        return isBuilderBlock(block.location)
-    }
-
-    fun isBuilderBlock(location: Location): Boolean {
-        return builderBlocks.contains(location)
-    }
-
-//    fun removeBlock(location: Location) {
-//        //TODO
-//    }
-//
-//    fun addBlock(location: Location) {
-//        //TODO
-//
-//        connection.prepareStatement("INSERT INTO builder_blocks (location) VALUES (?)").use { preparedStatement ->
-//            preparedStatement.setString(1, LocationUtil.serialize(location))
-//            preparedStatement.executeUpdate()
-//        }
-//    }
 }

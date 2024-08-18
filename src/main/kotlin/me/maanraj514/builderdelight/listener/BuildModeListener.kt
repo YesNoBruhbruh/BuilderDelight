@@ -16,10 +16,11 @@ class BuildModeListener(private val plugin: BuilderDelight) : Listener {
         val player = event.player
         val uuid = player.uniqueId
 
-        if (plugin.builders.contains(uuid)) {
-            val block = event.block
-            plugin.addBlock(block)
-        }
+        //TODO
+//        if (plugin.builders.contains(uuid)) {
+//            val block = event.block
+//            plugin.addBlock(block)
+//        }
     }
 
     @EventHandler
@@ -29,13 +30,15 @@ class BuildModeListener(private val plugin: BuilderDelight) : Listener {
 
         val location = event.block.location
 
-        if (!plugin.isBuilderBlock(location)) return // just a normal block
+        //TODO
+//        if (!plugin.isBuilderBlock(location)) return // just a normal block
 
         // if they are a normal person, they can't break a builderBlock.
-        if (!plugin.builders.contains(uuid)) {
-            event.isCancelled = true
-            return
-        }
+        //TODO
+//        if (!plugin.builders.contains(uuid)) {
+//            event.isCancelled = true
+//            return
+//        }
 
         // now they are a builder, we remove the block from the list.
         plugin.removeBlock(location)
@@ -61,20 +64,22 @@ class BuildModeListener(private val plugin: BuilderDelight) : Listener {
     @EventHandler
     fun onEntityExplode(event: EntityExplodeEvent) {
         for (block in event.blockList()) {
-            if (plugin.isBuilderBlock(block)) {
-                event.isCancelled = true
-                return
-            }
+            //TODO
+//            if (plugin.isBuilderBlock(block)) {
+//                event.isCancelled = true
+//                return
+//            }
         }
     }
 
     @EventHandler
     fun onBlockExplode(event: BlockExplodeEvent) {
         for (block in event.blockList()) {
-            if (plugin.isBuilderBlock(block)) {
-                event.isCancelled = true
-                return
-            }
+            //TODO
+//            if (plugin.isBuilderBlock(block)) {
+//                event.isCancelled = true
+//                return
+//            }
         }
     }
 
