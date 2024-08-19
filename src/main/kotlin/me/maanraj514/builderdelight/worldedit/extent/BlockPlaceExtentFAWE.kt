@@ -1,19 +1,18 @@
 package me.maanraj514.builderdelight.worldedit.extent
 
+import com.sk89q.worldedit.WorldEdit
 import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldedit.entity.Player
 import com.sk89q.worldedit.event.extent.EditSessionEvent
 import com.sk89q.worldedit.extent.AbstractDelegateExtent
 import com.sk89q.worldedit.extent.Extent
+import com.sk89q.worldedit.function.operation.Operations
 import com.sk89q.worldedit.function.pattern.Pattern
 import com.sk89q.worldedit.regions.Region
 import com.sk89q.worldedit.world.block.BlockStateHolder
 import com.sk89q.worldedit.world.registry.BlockMaterial
 import me.maanraj514.builderdelight.BuilderDelight
-import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.block.Block
 
 class BlockPlaceExtentFAWE(
     private val event: EditSessionEvent,

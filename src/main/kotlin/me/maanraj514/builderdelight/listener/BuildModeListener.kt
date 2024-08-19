@@ -16,11 +16,10 @@ class BuildModeListener(private val plugin: BuilderDelight) : Listener {
         val player = event.player
         val uuid = player.uniqueId
 
-        //TODO
-//        if (plugin.builders.contains(uuid)) {
-//            val block = event.block
-//            plugin.addBlock(block)
-//        }
+        if (plugin.builders.contains(uuid)) {
+            val location = event.block.location
+            plugin.addBlock(location)
+        }
     }
 
     @EventHandler
@@ -30,15 +29,12 @@ class BuildModeListener(private val plugin: BuilderDelight) : Listener {
 
         val location = event.block.location
 
-        //TODO
-//        if (!plugin.isBuilderBlock(location)) return // just a normal block
+        if (!plugin.isBuilderBlock(location)) return // just a normal block
 
-        // if they are a normal person, they can't break a builderBlock.
-        //TODO
-//        if (!plugin.builders.contains(uuid)) {
-//            event.isCancelled = true
-//            return
-//        }
+        if (!plugin.builders.contains(uuid)) {
+            event.isCancelled = true
+            return
+        }
 
         // now they are a builder, we remove the block from the list.
         plugin.removeBlock(location)
@@ -64,22 +60,20 @@ class BuildModeListener(private val plugin: BuilderDelight) : Listener {
     @EventHandler
     fun onEntityExplode(event: EntityExplodeEvent) {
         for (block in event.blockList()) {
-            //TODO
-//            if (plugin.isBuilderBlock(block)) {
-//                event.isCancelled = true
-//                return
-//            }
+            if (plugin.isBuilderBlock(block.location)) {
+                event.isCancelled = true
+                return
+            }
         }
     }
 
     @EventHandler
     fun onBlockExplode(event: BlockExplodeEvent) {
         for (block in event.blockList()) {
-            //TODO
-//            if (plugin.isBuilderBlock(block)) {
-//                event.isCancelled = true
-//                return
-//            }
+            if (plugin.isBuilderBlock(block.location)) {
+                event.isCancelled = true
+                return
+            }
         }
     }
 

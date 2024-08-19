@@ -1,5 +1,1 @@
 license-key: "put your license here!"
-
-save-task:
-    enabled: true
-    interval: 60 # This is in seconds

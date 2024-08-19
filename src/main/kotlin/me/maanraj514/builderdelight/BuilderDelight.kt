@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.sql.Connection
 import java.util.*
+import kotlin.collections.HashSet
 
 class BuilderDelight : JavaPlugin() {
 
@@ -22,6 +23,8 @@ class BuilderDelight : JavaPlugin() {
     private lateinit var databaseManager: DatabaseManager
 
     private lateinit var connection: Connection
+
+    private val builderBlocks = HashSet<Location>()
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -40,6 +43,8 @@ class BuilderDelight : JavaPlugin() {
 
         setupDatabase()
 
+        loadBlocks()
+
         FAWEListener(this)
 
         registerCommands()
@@ -47,9 +52,22 @@ class BuilderDelight : JavaPlugin() {
     }
 
     override fun onDisable() {
-        databaseManager.disconnectAll()
+        updateBuilderBlocks()
 
         builders.clear()
+        builderBlocks.clear()
+
+        databaseManager.disconnectAll()
+    }
+
+    fun loadBlocks() {
+        connection.prepareStatement("SELECT * FROM builder_blocks").use { preparedStatement ->
+            val results = preparedStatement.executeQuery()
+            while (results.next()) {
+                builderBlocks.add(LocationUtil.deserialize(results.getString("location")))
+            }
+        }
+        println("Loaded ${builderBlocks.size} builder blocks")
     }
 
     private fun setupDatabase() {
@@ -83,15 +101,29 @@ class BuilderDelight : JavaPlugin() {
     }
 
     fun removeBlock(location: Location) {
-        //TODO
+        builderBlocks.remove(location)
     }
 
     fun addBlock(location: Location) {
-        //TODO
+        if (builderBlocks.contains(location)) return
 
-        connection.prepareStatement("INSERT INTO builder_blocks (location) VALUES (?)").use { preparedStatement ->
-            preparedStatement.setString(1, LocationUtil.serialize(location))
-            preparedStatement.executeUpdate()
+        builderBlocks.add(location)
+    }
+
+    fun isBuilderBlock(location: Location): Boolean {
+        return builderBlocks.contains(location)
+    }
+
+    private fun updateBuilderBlocks() {
+        val statement = connection.prepareStatement("DELETE FROM builder_blocks")
+        statement.execute()
+        statement.close()
+
+        for (location in builderBlocks) {
+            connection.prepareStatement("INSERT INTO builder_blocks VALUES (?)").use { preparedStatement ->
+                preparedStatement.setString(1, LocationUtil.serialize(location))
+                preparedStatement.execute()
+            }
         }
     }
 }
